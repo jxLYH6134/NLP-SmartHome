@@ -2,6 +2,7 @@
 #define NVS_VALUE_H
 
 #include <esp_err.h>
+#include <stdint.h>
 
 /**
  * @brief 初始化NVS闪存
@@ -27,5 +28,22 @@ void nvs_write(const char *key, const char *value);
  * @return esp_err_t 读取操作的结果
  */
 esp_err_t nvs_read(const char *key, char *value, size_t max_length);
+
+/**
+ * @brief 将整数值写入NVS
+ *
+ * @param key 存储键名
+ * @param value 要存储的整数值
+ */
+void nvs_write_int(const char *key, int8_t value);
+
+/**
+ * @brief 从NVS读取整数值
+ *
+ * @param key 存储键名
+ * @param value_out 用于接收读取到的整数值
+ * @return esp_err_t 读取操作的结果
+ */
+esp_err_t nvs_read_int(const char *key, int8_t *value_out);
 
 #endif /* NVS_VALUE_H */
