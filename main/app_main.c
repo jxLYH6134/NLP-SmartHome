@@ -53,7 +53,7 @@ void init_gpio() {
     gpio_set_level(RELAY_GPIO, relay_state);
 }
 
-// 初始化 DHT11
+// 初始化DHT11
 void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_OUT; }
 
 // 初始化PWM
@@ -103,10 +103,7 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
 // 温湿度轮询任务 (2s)
 void dht11_task(void *param) {
     while (1) {
-        if (!dht11_read(&dht11_sensor, 5)) {
-            printf("[Temperature]> %.1fC\n", dht11_sensor.temperature);
-            printf("[Humidity]> %.1f%%\n", dht11_sensor.humidity);
-        }
+        dht11_read(&dht11_sensor, 5);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }
@@ -144,7 +141,7 @@ void button_task(void *arg) {
                     buzzer_beep(587, 100, 1);
                     buzzer_beep(523, 100, 1);
                     nvs_flash_erase();
-                    vTaskDelay(pdMS_TO_TICKS(2000));
+                    vTaskDelay(pdMS_TO_TICKS(1000));
                     esp_restart();
                 }
             }
@@ -168,15 +165,16 @@ void button_task(void *arg) {
     }
 }
 
-void hall_sensor_task(void *param) {
-    const TickType_t alarm_delay = pdMS_TO_TICKS(3000);
+// 霍尔轮询任务 (10ms)
+void hall_task(void *param) {
+    const TickType_t alarm_delay = pdMS_TO_TICKS(5000);
     static TickType_t high_start_time = 0;
     static bool alarm_triggered = false;
 
     while (1) {
         bool current_state = gpio_get_level(HALL_GPIO);
 
-        // LED 始终跟随 HALL 电平
+        // LED 跟随 HALL 电平
         gpio_set_level(LED_GPIO, current_state);
 
         if (current_state) { // 高电平
@@ -215,12 +213,12 @@ void app_main(void) {
     init_buzzer();
     init_dht11();
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(500));
     buzzer_beep(523, 100, 1);
     buzzer_beep(587, 100, 1);
     buzzer_beep(659, 100, 1);
 
     xTaskCreate(dht11_task, "dht11_task", 2048, NULL, 5, NULL);
-    xTaskCreate(button_task, "button_task", 2048, NULL, 3, NULL);
-    xTaskCreate(hall_sensor_task, "hall_sensor", 2048, NULL, 4, NULL);
+    xTaskCreate(button_task, "button_task", 2048, NULL, 4, NULL);
+    xTaskCreate(hall_task, "hall_task", 2048, NULL, 3, NULL);
 }
