@@ -22,9 +22,11 @@
 #define SETTING_BTN GPIO_NUM_18
 #define LED_GPIO GPIO_NUM_21
 #define HALL_GPIO GPIO_NUM_22
-#define DHT11_GPIO GPIO_NUM_23
-#define BUZZER_GPIO GPIO_NUM_32 // PWM
+#define DHT11_OUT GPIO_NUM_23
+#define BUZZER_SIGNAL GPIO_NUM_32 // PWM
 #define RELAY_GPIO GPIO_NUM_33
+
+static int relay_state = 0;
 
 typedef struct {
     gpio_num_t pin;
@@ -47,10 +49,12 @@ void init_gpio() {
 
     gpio_set_direction(HALL_GPIO, GPIO_MODE_INPUT);
     gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT);
+    gpio_set_direction(RELAY_GPIO, GPIO_MODE_OUTPUT);
+    gpio_set_level(RELAY_GPIO, relay_state);
 }
 
 // 初始化 DHT11
-void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_GPIO; }
+void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_OUT; }
 
 // 初始化PWM
 void init_buzzer(void) {
@@ -61,7 +65,7 @@ void init_buzzer(void) {
                                       .clk_cfg = LEDC_USE_REF_TICK};
     ledc_timer_config(&ledc_timer);
 
-    ledc_channel_config_t ledc_channel = {.gpio_num = BUZZER_GPIO,
+    ledc_channel_config_t ledc_channel = {.gpio_num = BUZZER_SIGNAL,
                                           .speed_mode = LEDC_LOW_SPEED_MODE,
                                           .channel = LEDC_CHANNEL_0,
                                           .timer_sel = LEDC_TIMER_0,
@@ -128,6 +132,9 @@ void button_task(void *arg) {
             if (gpio_get_level(SETTING_BTN)) {
                 setting_pressed = false;
                 // GPIO_NUM_18 Short
+                buzzer_beep(523, 100, 1); // D5
+                relay_state = !relay_state;
+                gpio_set_level(RELAY_GPIO, relay_state);
             } else {
                 if (xTaskGetTickCount() - setting_press_start >=
                     pdMS_TO_TICKS(3000)) {
