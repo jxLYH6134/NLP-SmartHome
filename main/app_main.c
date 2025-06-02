@@ -17,33 +17,40 @@
 #define TAG "Refrigerator"
 
 // GPIO定义
-#define COLOR_BTN GPIO_NUM_16
-#define CONTROL_BTN GPIO_NUM_17
+#define UP_BTN GPIO_NUM_16
+#define DN_BTN GPIO_NUM_17
 #define SETTING_BTN GPIO_NUM_18
+#define LED_GPIO GPIO_NUM_21
+#define HALL_GPIO GPIO_NUM_22
 #define DHT11_GPIO GPIO_NUM_23
-#define RELAY_GPIO GPIO_NUM_33
-#define HALL_GPIO GPIO_NUM_33
 #define BUZZER_GPIO GPIO_NUM_32 // PWM
+#define RELAY_GPIO GPIO_NUM_33
 
 typedef struct {
     gpio_num_t pin;
     bool last_level;
 } button_t;
 
-button_t color_btn = {COLOR_BTN, true};
-button_t control_btn = {CONTROL_BTN, true};
+button_t up_btn = {UP_BTN, true};
+button_t dn_btn = {DN_BTN, true};
 button_t setting_btn = {SETTING_BTN, true};
 dht11_t dht11_sensor;
 
 // 初始化GPIO
 void init_gpio() {
-    gpio_set_direction(COLOR_BTN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(COLOR_BTN, GPIO_PULLUP_ONLY);
-    gpio_set_direction(CONTROL_BTN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(CONTROL_BTN, GPIO_PULLUP_ONLY);
+    gpio_set_direction(UP_BTN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(UP_BTN, GPIO_PULLUP_ONLY);
+    gpio_set_direction(DN_BTN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(DN_BTN, GPIO_PULLUP_ONLY);
     gpio_set_direction(SETTING_BTN, GPIO_MODE_INPUT);
     gpio_set_pull_mode(SETTING_BTN, GPIO_PULLUP_ONLY);
+
+    gpio_set_direction(HALL_GPIO, GPIO_MODE_INPUT);
+    gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT);
 }
+
+// 初始化 DHT11
+void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_GPIO; }
 
 // 初始化PWM
 void init_buzzer(void) {
@@ -62,9 +69,6 @@ void init_buzzer(void) {
                                           .hpoint = 0};
     ledc_channel_config(&ledc_channel);
 }
-
-// 初始化 DHT11
-void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_GPIO; }
 
 // 蜂鸣器
 void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
@@ -92,6 +96,7 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 }
 
+// 温湿度轮询任务 (2s)
 void dht11_task(void *param) {
     while (1) {
         if (!dht11_read(&dht11_sensor, 5)) {
@@ -110,7 +115,7 @@ bool button_pressed(button_t *btn) {
     return pressed;
 }
 
-// 按钮轮询任务（10ms周期）
+// 按钮轮询任务 (10ms)
 void button_task(void *arg) {
     TickType_t setting_press_start = 0;
     bool setting_pressed = false;
@@ -128,9 +133,9 @@ void button_task(void *arg) {
                     pdMS_TO_TICKS(3000)) {
                     // GPIO_NUM_18 Long
                     ESP_LOGE(TAG, "还原设置并重启");
-                    buzzer_beep(659, 100, 8);
-                    vTaskDelay(pdMS_TO_TICKS(100));
-                    buzzer_beep(523, 100, 8);
+                    buzzer_beep(659, 100, 1);
+                    buzzer_beep(587, 100, 1);
+                    buzzer_beep(523, 100, 1);
                     nvs_flash_erase();
                     vTaskDelay(pdMS_TO_TICKS(2000));
                     esp_restart();
@@ -138,15 +143,62 @@ void button_task(void *arg) {
             }
         }
 
-        if (button_pressed(&color_btn)) {
+        if (button_pressed(&up_btn)) {
             // GPIO_NUM_16
+            buzzer_beep(523, 100, 1); // C5
+            vTaskDelay(pdMS_TO_TICKS(50));
+            buzzer_beep(659, 100, 1); // E5
         }
 
-        if (button_pressed(&control_btn)) {
+        if (button_pressed(&dn_btn)) {
             // GPIO_NUM_17
+            buzzer_beep(659, 100, 1); // E5
+            vTaskDelay(pdMS_TO_TICKS(50));
+            buzzer_beep(523, 100, 1); // C5
         }
 
         vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+void hall_sensor_task(void *param) {
+    const TickType_t alarm_delay = pdMS_TO_TICKS(3000);
+    static TickType_t high_start_time = 0;
+    static bool alarm_triggered = false;
+
+    while (1) {
+        bool current_state = gpio_get_level(HALL_GPIO);
+
+        // LED 始终跟随 HALL 电平
+        gpio_set_level(LED_GPIO, current_state);
+
+        if (current_state) { // 高电平
+            if (high_start_time == 0) {
+                high_start_time = xTaskGetTickCount();
+            } else if (!alarm_triggered &&
+                       (xTaskGetTickCount() - high_start_time) >= alarm_delay) {
+                alarm_triggered = true;
+
+                // 设置 2500Hz 持续蜂鸣
+                ledc_set_freq(LEDC_LOW_SPEED_MODE, LEDC_TIMER_0, 2500);
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 7);
+                ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+
+                // 持续检查直到电平变低
+                while (gpio_get_level(HALL_GPIO)) {
+                    vTaskDelay(pdMS_TO_TICKS(50));
+                }
+
+                // 关闭蜂鸣器
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
+                ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+            }
+        } else {
+            high_start_time = 0;
+            alarm_triggered = false;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
@@ -157,12 +209,11 @@ void app_main(void) {
     init_dht11();
 
     vTaskDelay(pdMS_TO_TICKS(1000));
-    buzzer_beep(523, 100, 8);
-    vTaskDelay(pdMS_TO_TICKS(100));
-    buzzer_beep(587, 100, 8);
-    vTaskDelay(pdMS_TO_TICKS(100));
-    buzzer_beep(659, 100, 8);
+    buzzer_beep(523, 100, 1);
+    buzzer_beep(587, 100, 1);
+    buzzer_beep(659, 100, 1);
 
     xTaskCreate(dht11_task, "dht11_task", 2048, NULL, 5, NULL);
     xTaskCreate(button_task, "button_task", 2048, NULL, 3, NULL);
+    xTaskCreate(hall_sensor_task, "hall_sensor", 2048, NULL, 4, NULL);
 }
