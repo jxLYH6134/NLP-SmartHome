@@ -1,24 +1,28 @@
-#include "cJSON.h"
-#include "driver/adc.h"
+// #include "cJSON.h"
+#include "dht11.h"
+// #include "driver/adc.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_event.h"
 #include "esp_log.h"
-#include "esp_timer.h"
+// #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "mqtt.h"
+// #include "freertos/task.h"
+// #include "mqtt.h"
 #include "nvs_flash.h"
-#include "nvs_value.h"
-#include "smartconfig.h"
-#include <stdio.h>
+// #include "nvs_value.h"
+// #include "smartconfig.h"
+// #include <stdio.h>
 
-#define TAG "LIGHT_CTRL"
+#define TAG "Refrigerator"
 
 // GPIO定义
 #define COLOR_BTN GPIO_NUM_16
 #define CONTROL_BTN GPIO_NUM_17
 #define SETTING_BTN GPIO_NUM_18
+#define DHT11_GPIO GPIO_NUM_23
+#define RELAY_GPIO GPIO_NUM_33
+#define HALL_GPIO GPIO_NUM_33
 #define BUZZER_GPIO GPIO_NUM_32 // PWM
 
 typedef struct {
@@ -29,6 +33,7 @@ typedef struct {
 button_t color_btn = {COLOR_BTN, true};
 button_t control_btn = {CONTROL_BTN, true};
 button_t setting_btn = {SETTING_BTN, true};
+dht11_t dht11_sensor;
 
 // 初始化GPIO
 void init_gpio() {
@@ -58,10 +63,19 @@ void init_buzzer(void) {
     ledc_channel_config(&ledc_channel);
 }
 
+// 初始化 DHT11
+void init_dht11(void) { dht11_sensor.dht11_pin = DHT11_GPIO; }
+
 // 蜂鸣器
-void buzzer_beep(uint32_t freq_hz, uint8_t duty, uint32_t duration_ms) {
+void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
+    if (freq_hz > 5500)
+        freq_hz = 5500;
+    if (freq_hz < 150)
+        freq_hz = 150;
     if (duty > 7)
         duty = 7;
+    if (duty < 1)
+        duty = 1;
 
     // 设置频率
     ledc_set_freq(LEDC_LOW_SPEED_MODE, LEDC_TIMER_0, freq_hz);
@@ -76,6 +90,16 @@ void buzzer_beep(uint32_t freq_hz, uint8_t duty, uint32_t duration_ms) {
     // 关闭 PWM
     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+}
+
+void dht11_task(void *param) {
+    while (1) {
+        if (!dht11_read(&dht11_sensor, 5)) {
+            printf("[Temperature]> %.1fC\n", dht11_sensor.temperature);
+            printf("[Humidity]> %.1f%%\n", dht11_sensor.humidity);
+        }
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+    }
 }
 
 // 上升沿检测
@@ -99,13 +123,16 @@ void button_task(void *arg) {
             if (gpio_get_level(SETTING_BTN)) {
                 setting_pressed = false;
                 // GPIO_NUM_18 Short
-                buzzer_beep(1000, 3000, 8);
             } else {
                 if (xTaskGetTickCount() - setting_press_start >=
                     pdMS_TO_TICKS(3000)) {
                     // GPIO_NUM_18 Long
                     ESP_LOGE(TAG, "还原设置并重启");
+                    buzzer_beep(659, 100, 8);
+                    vTaskDelay(pdMS_TO_TICKS(100));
+                    buzzer_beep(523, 100, 8);
                     nvs_flash_erase();
+                    vTaskDelay(pdMS_TO_TICKS(2000));
                     esp_restart();
                 }
             }
@@ -113,12 +140,10 @@ void button_task(void *arg) {
 
         if (button_pressed(&color_btn)) {
             // GPIO_NUM_16
-            buzzer_beep(3000, 3000, 4);
         }
 
         if (button_pressed(&control_btn)) {
             // GPIO_NUM_17
-            buzzer_beep(2000, 3000, 2);
         }
 
         vTaskDelay(pdMS_TO_TICKS(10));
@@ -129,6 +154,15 @@ void app_main(void) {
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     init_gpio();
     init_buzzer();
+    init_dht11();
 
-    xTaskCreate(button_task, "button_task", 2048, NULL, 5, NULL);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    buzzer_beep(523, 100, 8);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    buzzer_beep(587, 100, 8);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    buzzer_beep(659, 100, 8);
+
+    xTaskCreate(dht11_task, "dht11_task", 2048, NULL, 5, NULL);
+    xTaskCreate(button_task, "button_task", 2048, NULL, 3, NULL);
 }
