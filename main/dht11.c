@@ -40,7 +40,7 @@ int dht11_read(dht11_t *dht11, int connection_timeout) {
         waited = wait_for_state(*dht11, 0, 40);
 
         if (waited == -1) {
-            ESP_LOGE("DHT11:", "Failed at phase 1");
+            // ESP_LOGE("DHT11:", "Failed at phase 1");
             ets_delay_us(20000);
             continue;
         }

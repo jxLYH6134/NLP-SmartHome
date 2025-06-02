@@ -62,24 +62,24 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
                 if (cJSON_IsString(cmd) && params &&
                     strcmp(cmd->valuestring, "control") == 0) {
-                    cJSON *id = cJSON_GetObjectItem(params, "lightId");
+                    // cJSON *id = cJSON_GetObjectItem(params, "lightId");
 
-                    if (cJSON_IsString(id) &&
-                        strcmp(id->valuestring, lightId) == 0) {
-                        cJSON *rgb = cJSON_GetObjectItem(params, "rgb_state");
-                        cJSON *autoMod = cJSON_GetObjectItem(params, "autoMod");
+                    // if (cJSON_IsString(id) &&
+                    //     strcmp(id->valuestring, lightId) == 0) {
+                    //     cJSON *rgb = cJSON_GetObjectItem(params, "rgb_state");
+                    //     cJSON *autoMod = cJSON_GetObjectItem(params, "autoMod");
 
-                        if (cJSON_IsNumber(rgb) && cJSON_IsBool(autoMod)) {
-                            uint8_t new_rgb = rgb->valueint;
-                            rgb_state = new_rgb % 8;
-                            auto_mode = cJSON_IsTrue(autoMod);
-                            update_rgb_output(rgb_state);
-                            ESP_LOGI(TAG, "更新状态: RGB=%d, 模式=%s",
-                                     rgb_state, auto_mode ? "自动" : "手动");
-                        }
-                    } else {
-                        ESP_LOGE(TAG, "非本设备ID或格式错误");
-                    }
+                    //     if (cJSON_IsNumber(rgb) && cJSON_IsBool(autoMod)) {
+                    //         uint8_t new_rgb = rgb->valueint;
+                    //         rgb_state = new_rgb % 8;
+                    //         auto_mode = cJSON_IsTrue(autoMod);
+                    //         update_rgb_output(rgb_state);
+                    //         ESP_LOGI(TAG, "更新状态: RGB=%d, 模式=%s",
+                    //                  rgb_state, auto_mode ? "自动" : "手动");
+                    //     }
+                    // } else {
+                    //     ESP_LOGE(TAG, "非本设备ID或格式错误");
+                    // }
                 }
                 cJSON_Delete(root);
             } else {
@@ -113,7 +113,7 @@ void mqtt_publish(const char *topic, const char *data) {
 
 static void mqtt_app_start(void) {
     esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = "mqtt://hiyorin.top:1883",
+        .broker.address.uri = "mqtt://crychic.link:1883",
     };
 
     client = esp_mqtt_client_init(&mqtt_cfg);

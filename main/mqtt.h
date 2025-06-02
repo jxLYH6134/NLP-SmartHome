@@ -1,15 +1,14 @@
 #ifndef MQTT_H
 #define MQTT_H
 
+#include "dht11.h"
 #include <stdint.h>
 
 // 声明外部变量
-extern const char *lightId;
-extern bool auto_mode;
-extern uint8_t rgb_state;
-
-// 声明外部函数
-extern void update_rgb_output(uint8_t color);
+extern const char *deviceId;
+extern dht11_t dht11_sensor;
+extern int8_t target_temp;
+extern int8_t relay_state;
 
 /**
  * @brief 初始化MQTT客户端

@@ -1,18 +1,14 @@
-// #include "cJSON.h"
+#include "cJSON.h"
 #include "dht11.h"
-// #include "driver/adc.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_event.h"
 #include "esp_log.h"
-// #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
-// #include "freertos/task.h"
-// #include "mqtt.h"
+#include "mqtt.h"
 #include "nvs_flash.h"
-// #include "nvs_value.h"
-// #include "smartconfig.h"
-// #include <stdio.h>
+#include "nvs_value.h"
+#include "smartconfig.h"
 
 #define TAG "Refrigerator"
 
@@ -26,7 +22,10 @@
 #define BUZZER_SIGNAL GPIO_NUM_32 // PWM
 #define RELAY_GPIO GPIO_NUM_33
 
-static int relay_state = 0;
+// 状态变量
+const char *deviceId = "114514";
+int8_t target_temp = 10;
+int8_t relay_state = 0;
 
 typedef struct {
     gpio_num_t pin;
@@ -50,7 +49,6 @@ void init_gpio() {
     gpio_set_direction(HALL_GPIO, GPIO_MODE_INPUT);
     gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT);
     gpio_set_direction(RELAY_GPIO, GPIO_MODE_OUTPUT);
-    gpio_set_level(RELAY_GPIO, relay_state);
 }
 
 // 初始化DHT11
@@ -100,11 +98,36 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 }
 
+void send_mqtt_status() {
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "command", "status");
+    cJSON *params = cJSON_AddObjectToObject(root, "params");
+    cJSON_AddStringToObject(params, "deviceId", deviceId);
+    cJSON_AddBoolToObject(params, "freeze", relay_state);
+    cJSON_AddBoolToObject(params, "opened", gpio_get_level(HALL_GPIO));
+    cJSON_AddNumberToObject(params, "targetTemp", target_temp);
+    cJSON_AddNumberToObject(params, "currentTemp", dht11_sensor.temperature);
+    cJSON_AddNumberToObject(params, "currentHumi", dht11_sensor.humidity);
+
+    char *json_str = cJSON_PrintUnformatted(root);
+    mqtt_publish("/topic/send", json_str);
+
+    cJSON_free(json_str);
+    cJSON_Delete(root);
+}
+
+// mqtt初始化独立线程
+void mqtt_task(void *arg) {
+    init_mqtt();
+    vTaskDelete(NULL);
+}
+
 // 温湿度轮询任务 (2s)
 void dht11_task(void *param) {
     while (1) {
         dht11_read(&dht11_sensor, 5);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        send_mqtt_status();
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
@@ -129,8 +152,9 @@ void button_task(void *arg) {
             if (gpio_get_level(SETTING_BTN)) {
                 setting_pressed = false;
                 // GPIO_NUM_18 Short
-                buzzer_beep(523, 100, 1); // D5
+                buzzer_beep(587, 100, 1); // D5
                 relay_state = !relay_state;
+                nvs_write_int("relay_state", relay_state);
                 gpio_set_level(RELAY_GPIO, relay_state);
             } else {
                 if (xTaskGetTickCount() - setting_press_start >=
@@ -149,15 +173,23 @@ void button_task(void *arg) {
 
         if (button_pressed(&up_btn)) {
             // GPIO_NUM_16
-            buzzer_beep(523, 100, 1); // C5
-            vTaskDelay(pdMS_TO_TICKS(50));
+            if (target_temp < 20) {
+                target_temp++;
+                buzzer_beep(523, 100, 1); // C5
+                nvs_write_int("target_temp", target_temp);
+                vTaskDelay(pdMS_TO_TICKS(10));
+            }
             buzzer_beep(659, 100, 1); // E5
         }
 
         if (button_pressed(&dn_btn)) {
             // GPIO_NUM_17
-            buzzer_beep(659, 100, 1); // E5
-            vTaskDelay(pdMS_TO_TICKS(50));
+            if (target_temp > 0) {
+                target_temp--;
+                buzzer_beep(659, 100, 1); // E5
+                nvs_write_int("target_temp", target_temp);
+                vTaskDelay(pdMS_TO_TICKS(10));
+            }
             buzzer_beep(523, 100, 1); // C5
         }
 
@@ -212,6 +244,17 @@ void app_main(void) {
     init_gpio();
     init_buzzer();
     init_dht11();
+    init_nvs();
+    init_wifi();
+
+    if (nvs_read_int("target_temp", &target_temp) != ESP_OK) {
+        ESP_LOGW(TAG, "读取保存的设定温度失败");
+    }
+
+    if (nvs_read_int("relay_state", &relay_state) != ESP_OK) {
+        ESP_LOGW(TAG, "读取保存的设定状态失败");
+    }
+    gpio_set_level(RELAY_GPIO, relay_state);
 
     vTaskDelay(pdMS_TO_TICKS(500));
     buzzer_beep(523, 100, 1);
@@ -221,4 +264,5 @@ void app_main(void) {
     xTaskCreate(dht11_task, "dht11_task", 2048, NULL, 5, NULL);
     xTaskCreate(button_task, "button_task", 2048, NULL, 4, NULL);
     xTaskCreate(hall_task, "hall_task", 2048, NULL, 3, NULL);
+    xTaskCreate(mqtt_task, "mqtt_task", 4096, NULL, 2, NULL);
 }
