@@ -106,13 +106,15 @@ void send_mqtt_status() {
     cJSON_AddBoolToObject(params, "freeze", relay_state);
     cJSON_AddBoolToObject(params, "opened", gpio_get_level(HALL_GPIO));
     cJSON_AddNumberToObject(params, "targetTemp", target_temp);
-    cJSON_AddNumberToObject(params, "currentTemp", dht11_sensor.temperature);
+    double temp = dht11_sensor.temperature;
+    double rounded_temp = (int)(temp * 10 + 0.5) / 10.0;
+    cJSON_AddNumberToObject(params, "currentTemp", rounded_temp);
     cJSON_AddNumberToObject(params, "currentHumi", dht11_sensor.humidity);
 
     char *json_str = cJSON_PrintUnformatted(root);
     mqtt_publish("/topic/send", json_str);
 
-    cJSON_free(json_str);
+    free(json_str);
     cJSON_Delete(root);
 }
 

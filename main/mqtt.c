@@ -107,7 +107,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 void mqtt_publish(const char *topic, const char *data) {
     if (client) {
         int msg_id = esp_mqtt_client_publish(client, topic, data, 0, 0, 0);
-        ESP_LOGI(TAG, "发布消息: msg_id=%d", msg_id);
     }
 }
 
