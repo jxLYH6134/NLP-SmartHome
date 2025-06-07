@@ -32,19 +32,19 @@ public class ApiService {
 
         // 检查是否在10分钟内发送过
         if (Boolean.TRUE.equals(redisTemplate.hasKey(codeKey))) {
-            return ApiResponse.error(4, "10分钟内多次发送同类验证码");
+            return ApiResponse.error(4, "1分钟内多次发送同类验证码");
         }
 
         // 对于注册(type=0)，检查用户是否存在
         if ("0".equals(request.getType())) {
             if (userRepository.existsById(request.getUserId())) {
-                return ApiResponse.error(5, "该用户已存在");
+                return ApiResponse.error(3, "用户已存在");
             }
         }
         // 对于密码重置(type=1)，检查用户是否不存在
         else if ("1".equals(request.getType())) {
             if (!userRepository.existsById(request.getUserId())) {
-                return ApiResponse.error(6, "该用户不存在");
+                return ApiResponse.error(3, "用户不存在");
             }
         }
 
@@ -60,7 +60,7 @@ public class ApiService {
 
             ResponseEntity<String> response = restTemplate.getForEntity(notificationUrl, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
-                return ApiResponse.error(3, "发送失败，请检查短信平台");
+                return ApiResponse.error(4, "发送失败，请检查短信平台");
             }
 
             // 在Redis存储带TTL的验证码
@@ -75,7 +75,7 @@ public class ApiService {
     public ApiResponse registerUser(ApiRequest request) {
         // 检查用户是否存在
         if (userRepository.existsById(request.getUserId())) {
-            return ApiResponse.error(3, "该用户已存在");
+            return ApiResponse.error(3, "用户已存在");
         }
 
         // 验证vCode
