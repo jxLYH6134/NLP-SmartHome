@@ -9,10 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "devices")
+public class Device {
     @Id
-    private String userId;
-    private String password;
-    private String familyGroupId;
+    private String deviceId;
+    private String deviceName;
+    private String ownerId;
+    private String roomId;
 }
+
