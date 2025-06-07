@@ -8,6 +8,7 @@ import lombok.Setter;
 public class ApiResponse {
     private int code;
     private String info;
+    private Object data;
 
     public static ApiResponse success() {
         ApiResponse response = new ApiResponse();
@@ -21,6 +22,15 @@ public class ApiResponse {
         ApiResponse response = new ApiResponse();
         response.setCode(0);
         response.setInfo(info);
+        return response;
+    }
+
+    //可承载对象的success
+    public static ApiResponse success(Object data) {
+        ApiResponse response = new ApiResponse();
+        response.setCode(0);
+        response.setInfo("success");
+        response.setData(data);
         return response;
     }
 
