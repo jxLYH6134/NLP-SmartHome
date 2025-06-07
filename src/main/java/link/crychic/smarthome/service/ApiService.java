@@ -125,24 +125,6 @@ public class ApiService {
         }
     }
 
-    public ApiResponse testAuth(String userId, String token) {
-        try {
-            String authKey = userId + ":auth";
-            String storedToken = redisTemplate.opsForValue().get(authKey);
-
-            if (storedToken == null || !storedToken.equals(token)) {
-                return ApiResponse.error(401, "Unauthorized");
-            }
-
-            // 刷新token的TTL
-            redisTemplate.expire(authKey, 5, TimeUnit.MINUTES);
-
-            return ApiResponse.success();
-        } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
-        }
-    }
-
     public ApiResponse changePassword(ApiRequest request) {
         try {
             // 检查用户是否存在

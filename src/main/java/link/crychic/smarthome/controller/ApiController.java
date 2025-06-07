@@ -68,9 +68,7 @@ public class ApiController {
     }
 
     @PostMapping("/testAuth")
-    public ApiResponse testAuth(
-            @RequestHeader(value = "Authorization", required = false) String token,
-            @RequestBody ApiRequest request) {
-        return apiService.testAuth(request.getUserId(), token);
+    public ApiResponse testAuth() {
+        return ApiResponse.success();
     }
 }
