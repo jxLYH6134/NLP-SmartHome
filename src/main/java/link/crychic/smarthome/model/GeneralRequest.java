@@ -10,8 +10,8 @@ import lombok.Setter;
 public class GeneralRequest {
     private String ownerId;
     private String deviceId;
-    private String roomId;
-    private String familyGroupId;
+    private Integer roomId;
+    private Integer familyGroupId;
     private String deviceName;
     private String roomName;
     private String groupName;

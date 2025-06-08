@@ -12,7 +12,7 @@ import lombok.Setter;
 @Table(name = "family_groups")
 public class FamilyGroup {
     @Id
-    private String familyGroupId;
+    private Integer familyGroupId;
     private String groupName;
     private String ownerId;
 }

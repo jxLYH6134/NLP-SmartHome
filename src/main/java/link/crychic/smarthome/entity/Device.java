@@ -15,6 +15,6 @@ public class Device {
     private String deviceId;
     private String deviceName;
     private String ownerId;
-    private String roomId;
+    private Integer roomId;
 }
 

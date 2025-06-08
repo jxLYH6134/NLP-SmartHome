@@ -12,8 +12,8 @@ import lombok.Setter;
 @Table(name = "rooms")
 public class Room {
     @Id
-    private String roomId;
+    private Integer roomId;
     private String roomName;
     private String ownerId;
-    private String familyGroupId;
+    private Integer familyGroupId;
 }
