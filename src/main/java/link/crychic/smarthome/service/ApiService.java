@@ -68,7 +68,7 @@ public class ApiService {
 
             return ApiResponse.success();
         } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
+            return ApiResponse.error(100, "操作失败");
         }
     }
 
@@ -92,7 +92,7 @@ public class ApiService {
             userRepository.save(user);
             return ApiResponse.success();
         } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
+            return ApiResponse.error(100, "操作失败");
         }
     }
 
@@ -121,7 +121,7 @@ public class ApiService {
             return ApiResponse.success(token);
 
         } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
+            return ApiResponse.error(100, "操作失败");
         }
     }
 
@@ -146,7 +146,7 @@ public class ApiService {
 
             return ApiResponse.success();
         } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
+            return ApiResponse.error(100, "操作失败");
         }
     }
 
@@ -175,7 +175,7 @@ public class ApiService {
 
             return ApiResponse.success();
         } catch (Exception e) {
-            return ApiResponse.error(100, "服务器错误");
+            return ApiResponse.error(100, "操作失败");
         }
     }
 }
