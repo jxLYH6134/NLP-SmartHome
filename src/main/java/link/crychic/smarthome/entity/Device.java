@@ -14,7 +14,8 @@ public class Device {
     @Id
     private String deviceId;
     private String deviceName;
+    private String type;
+    private String params;
     private String ownerId;
     private Integer roomId;
 }
-

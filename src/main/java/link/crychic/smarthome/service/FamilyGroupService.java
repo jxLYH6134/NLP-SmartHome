@@ -19,6 +19,10 @@ public class FamilyGroupService {
 
     public ApiResponse getFamilyGroup(Integer familyGroupId) {
         try {
+            if (familyGroupId == null) {
+                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
+            }
+
             FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
             if (familyGroup == null) {
                 return ApiResponse.error(7, "家庭组不存在");
@@ -105,12 +109,10 @@ public class FamilyGroupService {
 
     public ApiResponse getUserFamilyGroups(String ownerId) {
         try {
-            // 检查用户是否存在
             if (!userRepository.existsById(ownerId)) {
                 return ApiResponse.error(3, "用户不存在");
             }
 
-            // 查找用户的所有家庭组
             List<FamilyGroup> familyGroups = familyGroupRepository.findAll()
                     .stream()
                     .filter(group -> group.getOwnerId().equals(ownerId))
