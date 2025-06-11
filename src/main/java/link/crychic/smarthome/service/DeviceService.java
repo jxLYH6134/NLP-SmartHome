@@ -7,6 +7,7 @@ import link.crychic.smarthome.repository.RoomRepository;
 import link.crychic.smarthome.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class DeviceService {
     }
 
     public ApiResponse updateDevice(String deviceId, String deviceName, String type,
-                                    String params, String ownerId, Integer roomId) {
+                                    JsonNode params, String ownerId, Integer roomId) {
         try {
             if (deviceId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少deviceId");

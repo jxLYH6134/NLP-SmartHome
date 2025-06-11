@@ -3,6 +3,7 @@ package link.crychic.smarthome.model;
 import link.crychic.smarthome.annotation.InjectUserId;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Getter
 @Setter
@@ -10,7 +11,7 @@ import lombok.Setter;
 public class GeneralRequest {
     private String ownerId;
     private String type;
-    private String params;
+    private JsonNode params;
     private String deviceId;
     private String deviceName;
     private Integer roomId;
