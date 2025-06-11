@@ -9,10 +9,12 @@ import lombok.Setter;
 @InjectUserId
 public class GeneralRequest {
     private String ownerId;
+    private String type;
+    private String params;
     private String deviceId;
-    private Integer roomId;
-    private Integer familyGroupId;
     private String deviceName;
+    private Integer roomId;
     private String roomName;
+    private Integer familyGroupId;
     private String groupName;
 }
