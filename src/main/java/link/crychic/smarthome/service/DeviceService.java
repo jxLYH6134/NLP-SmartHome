@@ -39,7 +39,7 @@ public class DeviceService {
         }
     }
 
-    public ApiResponse updateDevice(String deviceId, String deviceName, String type,
+    public ApiResponse updateDevice(String deviceId, String deviceName,
                                     String ownerId, Integer roomId) {
         try {
             if (deviceId == null) {
@@ -47,16 +47,8 @@ public class DeviceService {
             }
 
             Device device = deviceRepository.findById(deviceId).orElse(null);
-
-            // 如果设备不存在，创建新设备
             if (device == null) {
-                if (type == null) {
-                    return ApiResponse.error(2, "参数错误: 创建设备时缺少type");
-                }
-
-                device = new Device();
-                device.setDeviceId(deviceId);
-                device.setType(type);
+                return ApiResponse.error(5, "设备不存在");
             }
 
             if (deviceName != null && device.getOwnerId() != null && !device.getOwnerId().equals(ownerId)) {
