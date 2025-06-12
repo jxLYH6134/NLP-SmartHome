@@ -20,12 +20,19 @@ public class RoomController {
 
     @PostMapping("/create")
     public ApiResponse createRoom(@RequestBody GeneralRequest request) {
-        return roomService.createRoom(request.getRoomName(), request.getOwnerId(), request.getFamilyGroupId());
+        return roomService.createRoom(
+                request.getRoomName(),
+                request.getOwnerId(),
+                request.getFamilyGroupId());
     }
 
     @PutMapping("/update")
     public ApiResponse updateRoom(@RequestBody GeneralRequest request) {
-        return roomService.updateRoom(request.getRoomId(), request.getRoomName(), request.getOwnerId(), request.getFamilyGroupId());
+        return roomService.updateRoom(
+                request.getRoomId(),
+                request.getRoomName(),
+                request.getOwnerId(),
+                request.getFamilyGroupId());
     }
 
     @DeleteMapping("/delete")

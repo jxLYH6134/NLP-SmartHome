@@ -25,7 +25,10 @@ public class FamilyGroupController {
 
     @PutMapping("/update")
     public ApiResponse updateFamilyGroup(@RequestBody GeneralRequest request) {
-        return familyGroupService.updateFamilyGroup(request.getFamilyGroupId(), request.getGroupName(), request.getOwnerId());
+        return familyGroupService.updateFamilyGroup(
+                request.getFamilyGroupId(),
+                request.getGroupName(),
+                request.getOwnerId());
     }
 
     @DeleteMapping("/delete")

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MqttConfig {
-
     private static final String BROKER_URL = "tcp://crychic.link:1883";
     private static final String CLIENT_ID = "SmartHomeServer";
 

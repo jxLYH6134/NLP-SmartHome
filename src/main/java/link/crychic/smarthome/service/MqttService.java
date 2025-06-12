@@ -26,7 +26,6 @@ import java.time.Instant;
 
 @Service
 public class MqttService {
-
     private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
     private static final String STATUS_TOPIC = "/status";
     private static final String CONTROL_TOPIC = "/control";
@@ -41,7 +40,6 @@ public class MqttService {
     @PostConstruct
     public void init() {
         try {
-            // 设置回调处理器
             mqttClient.setCallback(new MqttCallback() {
                 @Override
                 public void disconnected(MqttDisconnectResponse mqttDisconnectResponse) {
@@ -78,7 +76,6 @@ public class MqttService {
                 }
             });
 
-            // 订阅状态主题
             mqttClient.subscribe(STATUS_TOPIC, 1);
             logger.info("成功订阅MQTT主题: {}", STATUS_TOPIC);
 
@@ -136,10 +133,11 @@ public class MqttService {
 
     private void handleWarning(MqttCommand mqttMessage) {
         try {
+            Device device = deviceRepository.findById(mqttMessage.getDeviceId()).orElse(null);
             String warningMessage = mqttMessage.getParams().asText();
             String notificationUrl = String.format("%s/%s/%s",
                     ApiConstants.NOTIFICATION_API_ENDPOINT,
-                    "提示",
+                    device != null ? device.getDeviceName() : null,
                     warningMessage);
 
             restTemplate.getForEntity(notificationUrl, String.class);

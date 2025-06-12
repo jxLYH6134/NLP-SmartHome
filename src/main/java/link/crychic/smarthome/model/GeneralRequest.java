@@ -1,9 +1,9 @@
 package link.crychic.smarthome.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import link.crychic.smarthome.annotation.InjectUserId;
 import lombok.Getter;
 import lombok.Setter;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @Getter
 @Setter

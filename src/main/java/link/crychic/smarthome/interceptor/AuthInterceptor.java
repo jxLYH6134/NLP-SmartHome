@@ -11,13 +11,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 认证拦截器
- * 用于验证请求中的Authorization头
- */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
-
     @Autowired
     private StringRedisTemplate redisTemplate;
 

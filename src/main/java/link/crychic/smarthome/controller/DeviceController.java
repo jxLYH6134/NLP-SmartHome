@@ -43,8 +43,11 @@ public class DeviceController {
 
     @PutMapping("/update")
     public ApiResponse updateDevice(@RequestBody GeneralRequest request) {
-        return deviceService.updateDevice(request.getDeviceId(),
-                request.getDeviceName(), request.getOwnerId(), request.getRoomId());
+        return deviceService.updateDevice(
+                request.getDeviceId(),
+                request.getDeviceName(),
+                request.getOwnerId(),
+                request.getRoomId());
     }
 
     @DeleteMapping("/delete")
