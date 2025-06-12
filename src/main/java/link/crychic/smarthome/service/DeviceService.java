@@ -2,6 +2,7 @@ package link.crychic.smarthome.service;
 
 import link.crychic.smarthome.entity.Device;
 import link.crychic.smarthome.model.ApiResponse;
+import link.crychic.smarthome.model.DeviceRequest;
 import link.crychic.smarthome.repository.DeviceRepository;
 import link.crychic.smarthome.repository.RoomRepository;
 import link.crychic.smarthome.repository.UserRepository;
@@ -12,7 +13,6 @@ import java.util.List;
 
 @Service
 public class DeviceService {
-
     @Autowired
     private DeviceRepository deviceRepository;
 
@@ -21,6 +21,17 @@ public class DeviceService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private DeviceRequest createFilteredDevice(Device device) {
+        DeviceRequest filteredDevice = new DeviceRequest();
+        filteredDevice.setDeviceId(device.getDeviceId());
+        filteredDevice.setDeviceName(device.getDeviceName());
+        filteredDevice.setType(device.getType());
+        filteredDevice.setParams(device.getParams());
+        filteredDevice.setLastHeartbeat(device.getLastHeartbeat());
+        // DeviceRequest类型不包含ownerId和roomId字段
+        return filteredDevice;
+    }
 
     public ApiResponse getDevice(String deviceId) {
         try {
@@ -33,7 +44,7 @@ public class DeviceService {
                 return ApiResponse.error(5, "设备不存在");
             }
 
-            return ApiResponse.success(device);
+            return ApiResponse.success(createFilteredDevice(device));
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }
@@ -108,7 +119,12 @@ public class DeviceService {
 
             List<Device> devices = deviceRepository.findByRoomId(roomId);
 
-            return ApiResponse.success(devices);
+            // 移除敏感字段（ownerId和roomId）
+            List<DeviceRequest> filteredDevices = devices.stream()
+                    .map(this::createFilteredDevice)
+                    .toList();
+
+            return ApiResponse.success(filteredDevices);
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }
@@ -122,7 +138,12 @@ public class DeviceService {
 
             List<Device> devices = deviceRepository.findByOwnerId(ownerId);
 
-            return ApiResponse.success(devices);
+            // 移除敏感字段（ownerId和roomId）
+            List<DeviceRequest> filteredDevices = devices.stream()
+                    .map(this::createFilteredDevice)
+                    .toList();
+
+            return ApiResponse.success(filteredDevices);
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }
