@@ -126,6 +126,7 @@ public class MqttService {
 
             // 更新设备参数
             device.setParams(mqttMessage.getParams());
+            device.setLastHeartbeat(Timestamp.from(Instant.now()));
             deviceRepository.save(device);
         } catch (Exception e) {
             logger.error("更新设备状态失败: {}", mqttMessage.getDeviceId(), e);

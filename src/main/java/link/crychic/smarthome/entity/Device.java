@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @Entity
@@ -22,6 +24,8 @@ public class Device {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private JsonNode params;
+    @Column(name = "last_heartbeat", columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
+    private Timestamp lastHeartbeat;
     private String ownerId;
     private Integer roomId;
 }
