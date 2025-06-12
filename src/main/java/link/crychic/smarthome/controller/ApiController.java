@@ -1,8 +1,10 @@
 package link.crychic.smarthome.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import link.crychic.smarthome.model.ApiRequest;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.service.ApiService;
+import link.crychic.smarthome.service.OllamaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
     @Autowired
     private ApiService apiService;
+
+    @Autowired
+    private OllamaService ollamaService;
 
     @PostMapping("/sendVerifyCode")
     public ApiResponse sendVerifyCode(
@@ -70,5 +75,10 @@ public class ApiController {
     @PostMapping("/testAuth")
     public ApiResponse testAuth() {
         return ApiResponse.success();
+    }
+
+    @PostMapping("/ollama")
+    public JsonNode ollama(@RequestBody String request) {
+        return ollamaService.generateResponse(request);
     }
 }
