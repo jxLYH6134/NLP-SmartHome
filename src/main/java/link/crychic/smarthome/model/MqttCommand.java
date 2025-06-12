@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MqttMessage {
+public class MqttCommand {
     private String command;
     private String deviceId;
     private String type;

@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import link.crychic.smarthome.constant.ApiConstants;
 import link.crychic.smarthome.entity.Device;
+import link.crychic.smarthome.model.MqttCommand;
 import link.crychic.smarthome.repository.DeviceRepository;
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttCallback;
@@ -100,7 +101,7 @@ public class MqttService {
 
     private void handleMessage(String payload) {
         try {
-            link.crychic.smarthome.model.MqttMessage mqttMessage = objectMapper.readValue(payload, link.crychic.smarthome.model.MqttMessage.class);
+            MqttCommand mqttMessage = objectMapper.readValue(payload, MqttCommand.class);
 
             if ("status".equals(mqttMessage.getCommand())) {
                 handleStatusUpdate(mqttMessage);
@@ -113,7 +114,7 @@ public class MqttService {
         }
     }
 
-    private void handleStatusUpdate(link.crychic.smarthome.model.MqttMessage mqttMessage) {
+    private void handleStatusUpdate(MqttCommand mqttMessage) {
         try {
             Device device = deviceRepository.findById(mqttMessage.getDeviceId()).orElse(null);
 
@@ -133,7 +134,7 @@ public class MqttService {
         }
     }
 
-    private void handleWarning(link.crychic.smarthome.model.MqttMessage mqttMessage) {
+    private void handleWarning(MqttCommand mqttMessage) {
         try {
             String warningMessage = mqttMessage.getParams().asText();
             String notificationUrl = String.format("%s/%s/%s",
@@ -151,7 +152,7 @@ public class MqttService {
 
     public void sendControlMessage(String deviceId, JsonNode params) {
         try {
-            link.crychic.smarthome.model.MqttMessage controlMessage = new link.crychic.smarthome.model.MqttMessage();
+            MqttCommand controlMessage = new MqttCommand();
             controlMessage.setCommand("control");
             controlMessage.setDeviceId(deviceId);
             controlMessage.setParams(params);
