@@ -3,10 +3,10 @@ package link.crychic.smarthome.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import link.crychic.smarthome.constant.AutomationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,6 +18,12 @@ import org.springframework.web.client.RestTemplate;
 public class OllamaService {
     private static final Logger logger = LoggerFactory.getLogger(OllamaService.class);
 
+    @Value("${ollama.url}")
+    private String ollamaUrl;
+
+    @Value("${ollama.model}")
+    private String ollamaModel;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -27,7 +33,7 @@ public class OllamaService {
     public JsonNode generateResponse(String prompt) {
         try {
             ObjectNode requestBody = objectMapper.createObjectNode();
-            requestBody.put("model", AutomationConstants.OLLAMA_MODEL_NAME);
+            requestBody.put("model", ollamaModel);
             requestBody.put("prompt", prompt);
             requestBody.put("stream", false);
 
@@ -37,7 +43,7 @@ public class OllamaService {
             HttpEntity<String> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(requestBody), headers);
 
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                    AutomationConstants.OLLAMA_ENDPOINT,
+                    ollamaUrl,
                     requestEntity,
                     String.class
             );
