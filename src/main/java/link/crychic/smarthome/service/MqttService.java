@@ -142,7 +142,6 @@ public class MqttService {
 
             restTemplate.getForEntity(notificationUrl, String.class);
             logger.info("警告通知发送成功: {}", warningMessage);
-
         } catch (Exception e) {
             logger.error("发送警告通知失败", e);
         }
@@ -161,10 +160,8 @@ public class MqttService {
 
             mqttClient.publish(CONTROL_TOPIC, message);
             logger.info("控制消息发送成功 - 设备: {}, 参数: {}", deviceId, params);
-
         } catch (Exception e) {
             logger.error("发送控制消息失败 - 设备: {}", deviceId, e);
-            throw new RuntimeException("发送MQTT控制消息失败", e);
         }
     }
 }
