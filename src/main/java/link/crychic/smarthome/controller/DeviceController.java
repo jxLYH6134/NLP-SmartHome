@@ -2,6 +2,7 @@ package link.crychic.smarthome.controller;
 
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.model.GeneralRequest;
+import link.crychic.smarthome.model.MqttCommand;
 import link.crychic.smarthome.service.DeviceService;
 import link.crychic.smarthome.service.MqttService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class DeviceController {
     }
 
     @PostMapping("/control")
-    public ApiResponse sendControlCommand(@RequestBody GeneralRequest request) {
+    public ApiResponse sendControlCommand(@RequestBody MqttCommand request) {
         try {
             if (request.getDeviceId() == null) {
                 return ApiResponse.error(2, "参数错误: 缺少deviceId");
