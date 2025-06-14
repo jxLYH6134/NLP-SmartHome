@@ -62,31 +62,28 @@ public class DeviceService {
                 return ApiResponse.error(5, "设备不存在");
             }
 
-            if (deviceName != null && device.getOwnerId() != null && !device.getOwnerId().equals(ownerId)) {
-                return ApiResponse.error(4, "无权限修改此设备名称");
+            if (device.getOwnerId() != null && !device.getOwnerId().equals(ownerId)) {
+                return ApiResponse.error(4, "无权限修改此设备");
             }
 
             if (deviceName != null) {
                 device.setDeviceName(deviceName);
             }
 
-            if (ownerId != null) {
-                if (!userRepository.existsById(ownerId)) {
-                    return ApiResponse.error(3, "用户不存在");
-                }
-                device.setOwnerId(ownerId);
+            if (!userRepository.existsById(ownerId)) {
+                return ApiResponse.error(3, "用户不存在");
             }
+            device.setOwnerId(ownerId);
 
             if (roomId != null) {
                 if (!roomRepository.existsById(roomId)) {
                     return ApiResponse.error(6, "房间不存在");
                 }
-                device.setRoomId(roomId);
             }
+            device.setRoomId(roomId);
 
             deviceRepository.save(device);
             return ApiResponse.success();
-
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }

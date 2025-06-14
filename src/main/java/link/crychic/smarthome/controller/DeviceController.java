@@ -35,7 +35,6 @@ public class DeviceController {
 
             mqttService.sendControlMessage(request.getDeviceId(), request.getParams());
             return ApiResponse.success();
-
         } catch (Exception e) {
             return ApiResponse.error(100, "发送控制命令失败");
         }
