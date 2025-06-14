@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AutomationRuleRepository extends JpaRepository<AutomationRule, Integer> {
     List<AutomationRule> findByOwnerId(String creatorUserId);
+
+    List<AutomationRule> findByIsEnabled(Boolean isEnabled);
 }
