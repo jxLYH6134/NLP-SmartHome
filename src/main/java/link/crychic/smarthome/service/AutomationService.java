@@ -1,8 +1,13 @@
 package link.crychic.smarthome.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import link.crychic.smarthome.entity.AutomationRule;
+import link.crychic.smarthome.entity.Device;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.repository.AutomationRuleRepository;
+import link.crychic.smarthome.repository.DeviceRepository;
 import link.crychic.smarthome.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -22,6 +29,18 @@ public class AutomationService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MqttService mqttService;
+
+    @Autowired
+    private OllamaService ollamaService;
 
     private volatile long lastCycleTime = 0;
 
@@ -132,7 +151,18 @@ public class AutomationService {
         }
     }
 
-    private void buildLLMRequest(AutomationRule node) {
-
+    private void buildLLMRequest(AutomationRule node) throws JsonProcessingException {
+        List<Device> devices = deviceRepository.findByOwnerId(node.getOwnerId());
+        String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        String promptDevices = objectMapper.writeValueAsString(devices);
+        String promptTime = "\n当前的HH:mm时间是：" + currentTime;
+        String promptDefine = """
+                \n系统要求：你是一个IoT智能助手，以上是用户所持有的设备，请根据用户描述决定是否要调整某些参数。
+                如果不匹配用户所说的条件或目前已经处于你想要调整的状态，你应返回一个空的params，不要调整任何东西。
+                你的返回模板：{"deviceId": 你想控制的设备,"params": 你想修改的参数}
+                用户要求：""";
+        String promptRule = node.getDescription();
+        JsonNode response = ollamaService.generateResponse(promptDevices + promptTime + promptDefine + promptRule);
+        mqttService.sendControlMessage(response.get("deviceId").asText(), response.get("params"));
     }
 }
