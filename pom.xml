@@ -10,7 +10,7 @@
     </parent>
     <groupId>link.crychic</groupId>
     <artifactId>SmartHome</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>SmartHome</name>
     <description>SmartHome</description>
     <url/>
