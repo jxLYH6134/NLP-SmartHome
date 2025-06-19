@@ -40,7 +40,7 @@ public class RoomService {
         }
     }
 
-    public ApiResponse createRoom(String roomName, String ownerId, Integer familyGroupId) {
+    public ApiResponse createRoom(String roomName, String ownerId, String familyGroupId) {
         try {
             if (roomName == null) {
                 return ApiResponse.error(2, "参数错误: 缺少roomName");
@@ -70,7 +70,7 @@ public class RoomService {
         }
     }
 
-    public ApiResponse updateRoom(Integer roomId, String roomName, String ownerId, Integer familyGroupId) {
+    public ApiResponse updateRoom(Integer roomId, String roomName, String ownerId, String familyGroupId) {
         try {
             if (roomId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少roomId");
@@ -129,7 +129,7 @@ public class RoomService {
         }
     }
 
-    public ApiResponse getFamilyGroupRooms(Integer familyGroupId) {
+    public ApiResponse getFamilyGroupRooms(String familyGroupId) {
         try {
             if (familyGroupId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少familyGroupId");

@@ -14,5 +14,5 @@ public class Room {
     private Integer roomId;
     private String roomName;
     private String ownerId;
-    private Integer familyGroupId;
+    private String familyGroupId;
 }

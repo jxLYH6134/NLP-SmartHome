@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FamilyGroupService {
@@ -17,7 +18,7 @@ public class FamilyGroupService {
     @Autowired
     private UserRepository userRepository;
 
-    public ApiResponse getFamilyGroup(Integer familyGroupId) {
+    public ApiResponse getFamilyGroup(String familyGroupId) {
         try {
             if (familyGroupId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
@@ -45,6 +46,7 @@ public class FamilyGroupService {
             }
 
             FamilyGroup familyGroup = new FamilyGroup();
+            familyGroup.setFamilyGroupId(UUID.randomUUID().toString());
             familyGroup.setGroupName(groupName);
             familyGroup.setOwnerId(ownerId);
 
@@ -56,7 +58,7 @@ public class FamilyGroupService {
         }
     }
 
-    public ApiResponse updateFamilyGroup(Integer familyGroupId, String groupName, String ownerId) {
+    public ApiResponse updateFamilyGroup(String familyGroupId, String groupName, String ownerId) {
         try {
             if (familyGroupId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
@@ -84,7 +86,7 @@ public class FamilyGroupService {
         }
     }
 
-    public ApiResponse deleteFamilyGroup(Integer familyGroupId, String ownerId) {
+    public ApiResponse deleteFamilyGroup(String familyGroupId, String ownerId) {
         try {
             if (familyGroupId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少familyGroupId");

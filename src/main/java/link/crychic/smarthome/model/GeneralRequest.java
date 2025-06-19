@@ -16,6 +16,6 @@ public class GeneralRequest {
     private String deviceName;
     private Integer roomId;
     private String roomName;
-    private Integer familyGroupId;
+    private String familyGroupId;
     private String groupName;
 }

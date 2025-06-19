@@ -14,7 +14,7 @@ public class FamilyGroupController {
 
     @GetMapping("/get")
     public ApiResponse getFamilyGroup(
-            @RequestParam("familyGroupId") Integer familyGroupId) {
+            @RequestParam("familyGroupId") String familyGroupId) {
         return familyGroupService.getFamilyGroup(familyGroupId);
     }
 

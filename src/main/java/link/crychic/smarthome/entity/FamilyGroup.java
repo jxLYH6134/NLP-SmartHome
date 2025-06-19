@@ -10,8 +10,7 @@ import lombok.Setter;
 @Table(name = "family_groups")
 public class FamilyGroup {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer familyGroupId;
+    private String familyGroupId;
     private String groupName;
     private String ownerId;
 }

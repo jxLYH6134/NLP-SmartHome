@@ -42,7 +42,7 @@ public class RoomController {
 
     @GetMapping("/list/family")
     public ApiResponse getFamilyGroupRooms(
-            @RequestParam("familyGroupId") Integer familyGroupId) {
+            @RequestParam("familyGroupId") String familyGroupId) {
         return roomService.getFamilyGroupRooms(familyGroupId);
     }
 
