@@ -1,0 +1,137 @@
+{
+	"pages": [{
+			"path": "pages/device/device",
+			"style": {
+				"navigationBarTitleText": "设备",
+				"app-plus": {
+					"bounce": "vertical",
+					"titleNView": {
+						"blurEffect": "extralight",
+						"backgroundColor": "#00FFFFFF",
+						"type": "float"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/device/add-device",
+			"style": {
+				"navigationBarTitleText": "添加设备"
+			}
+		},
+		{
+			"path": "pages/device/device-detail",
+			"style": {
+				"navigationBarTitleText": "设备详情"
+			}
+		},
+		{
+			"path": "pages/scene/scene",
+			"style": {
+				"navigationBarTitleText": "场景",
+				"app-plus": {
+					"bounce": "vertical",
+					"titleNView": {
+						"blurEffect": "extralight",
+						"backgroundColor": "#00FFFFFF",
+						"type": "float"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/profile/profile",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"app-plus": {
+					"bounce": "vertical",
+					"titleNView": {
+						"blurEffect": "extralight",
+						"backgroundColor": "#00FFFFFF",
+						"type": "float"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/profile/account",
+			"style": {
+				"navigationBarTitleText": "账号管理"
+			}
+		},
+		{
+			"path": "pages/profile/room",
+			"style": {
+				"navigationBarTitleText": "房间管理"
+			}
+		},
+		{
+			"path": "pages/profile/family",
+			"style": {
+				"navigationBarTitleText": "家庭组管理"
+			}
+		},
+		{
+			"path": "pages/profile/about",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
+			"path": "pages/profile/settings",
+			"style": {
+				"navigationBarTitleText": "应用设置"
+			}
+		},
+		{
+			"path": "pages/account/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/account/register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/account/reset",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "智能家居",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#FFFFFF"
+	},
+	"tabBar": {
+		"blurEffect": "extralight",
+		"color": "#8A8A8A",
+		"selectedColor": "#19CD90",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/device/device",
+				"iconPath": "/static/home0.png",
+				"selectedIconPath": "/static/home1.png",
+				"text": "设备"
+			},
+			{
+				"pagePath": "pages/scene/scene",
+				"iconPath": "/static/scene0.png",
+				"selectedIconPath": "/static/scene1.png",
+				"text": "场景"
+			},
+			{
+				"pagePath": "pages/profile/profile",
+				"iconPath": "/static/mine0.png",
+				"selectedIconPath": "/static/mine1.png",
+				"text": "我的"
+			}
+		]
+	},
+	"uniIdRouter": {}
+}
