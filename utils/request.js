@@ -99,8 +99,13 @@ export const authRequest = {
 		})
 	},
 
-	get(path, data = {}) {
-		return this.request(path, data, 'GET')
+	get(path, params = {}) {
+		// 将参数转换为查询字符串
+		const queryString = Object.keys(params).map(key =>
+			`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
+		).join('&')
+		const fullPath = queryString ? `${path}?${queryString}` : path
+		return this.request(fullPath, {}, 'GET')
 	},
 
 	post(path, data = {}) {
