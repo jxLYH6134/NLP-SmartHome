@@ -1,8 +1,10 @@
 package link.crychic.smarthome.service;
 
 import link.crychic.smarthome.entity.FamilyGroup;
+import link.crychic.smarthome.entity.Room;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.repository.FamilyGroupRepository;
+import link.crychic.smarthome.repository.RoomRepository;
 import link.crychic.smarthome.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import java.util.UUID;
 public class FamilyGroupService {
     @Autowired
     private FamilyGroupRepository familyGroupRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -99,6 +104,13 @@ public class FamilyGroupService {
 
             if (!familyGroup.getOwnerId().equals(ownerId)) {
                 return ApiResponse.error(4, "无权限删除此家庭组");
+            }
+
+            // 释放所属房间，将familyGroupId设为null
+            List<Room> rooms = roomRepository.findByFamilyGroupId(familyGroupId);
+            for (Room room : rooms) {
+                room.setFamilyGroupId(null);
+                roomRepository.save(room);
             }
 
             familyGroupRepository.deleteById(familyGroupId);

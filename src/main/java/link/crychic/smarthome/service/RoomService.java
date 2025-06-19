@@ -1,8 +1,10 @@
 package link.crychic.smarthome.service;
 
+import link.crychic.smarthome.entity.Device;
 import link.crychic.smarthome.entity.FamilyGroup;
 import link.crychic.smarthome.entity.Room;
 import link.crychic.smarthome.model.ApiResponse;
+import link.crychic.smarthome.repository.DeviceRepository;
 import link.crychic.smarthome.repository.FamilyGroupRepository;
 import link.crychic.smarthome.repository.RoomRepository;
 import link.crychic.smarthome.repository.UserRepository;
@@ -22,6 +24,9 @@ public class RoomService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     public ApiResponse getRoom(Integer roomId) {
         try {
@@ -119,6 +124,13 @@ public class RoomService {
 
             if (!room.getOwnerId().equals(ownerId)) {
                 return ApiResponse.error(4, "无权限删除此房间");
+            }
+
+            // 释放所有设备，将roomId设为null
+            List<Device> devices = deviceRepository.findByRoomId(roomId);
+            for (Device device : devices) {
+                device.setRoomId(null);
+                deviceRepository.save(device);
             }
 
             roomRepository.deleteById(roomId);
