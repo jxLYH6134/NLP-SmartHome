@@ -2,6 +2,7 @@ package link.crychic.smarthome.service;
 
 import link.crychic.smarthome.entity.FamilyGroup;
 import link.crychic.smarthome.entity.Room;
+import link.crychic.smarthome.entity.User;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.repository.FamilyGroupRepository;
 import link.crychic.smarthome.repository.RoomRepository;
@@ -133,6 +134,59 @@ public class FamilyGroupService {
                     .toList();
 
             return ApiResponse.success(familyGroups);
+        } catch (Exception e) {
+            return ApiResponse.error(100, "操作失败");
+        }
+    }
+
+    public ApiResponse joinFamilyGroup(String familyGroupId, String userId) {
+        try {
+            if (familyGroupId == null) {
+                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
+            }
+
+            if (!familyGroupRepository.existsById(familyGroupId)) {
+                return ApiResponse.error(7, "家庭组不存在");
+            }
+
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ApiResponse.error(3, "用户不存在");
+            }
+
+            user.setFamilyGroupId(familyGroupId);
+            userRepository.save(user);
+
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.error(100, "操作失败");
+        }
+    }
+
+    public ApiResponse leaveFamilyGroup(String familyGroupId, String userId) {
+        try {
+            if (familyGroupId == null) {
+                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
+            }
+
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ApiResponse.error(3, "用户不存在");
+            }
+
+            if (!familyGroupId.equals(user.getFamilyGroupId())) {
+                return ApiResponse.error(7, "用户不在此家庭组");
+            }
+
+            FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
+            if (familyGroup != null && familyGroup.getOwnerId().equals(userId)) {
+                return ApiResponse.error(7, "组长不能退出家庭组");
+            }
+
+            user.setFamilyGroupId(null);
+            userRepository.save(user);
+
+            return ApiResponse.success();
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }

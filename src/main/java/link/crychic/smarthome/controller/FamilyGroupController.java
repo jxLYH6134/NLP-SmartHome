@@ -40,4 +40,14 @@ public class FamilyGroupController {
     public ApiResponse getUserFamilyGroups(@RequestHeader("X-User-Id") String userId) {
         return familyGroupService.getUserFamilyGroups(userId);
     }
+
+    @PostMapping("/join")
+    public ApiResponse joinFamilyGroup(@RequestBody GeneralRequest request) {
+        return familyGroupService.joinFamilyGroup(request.getFamilyGroupId(), request.getOwnerId());
+    }
+
+    @PostMapping("/leave")
+    public ApiResponse leaveFamilyGroup(@RequestBody GeneralRequest request) {
+        return familyGroupService.leaveFamilyGroup(request.getFamilyGroupId(), request.getOwnerId());
+    }
 }
