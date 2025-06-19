@@ -4,7 +4,6 @@
 			"style": {
 				"navigationBarTitleText": "设备",
 				"app-plus": {
-					"bounce": "vertical",
 					"titleNView": {
 						"blurEffect": "extralight",
 						"backgroundColor": "#00FFFFFF",
@@ -30,7 +29,6 @@
 			"style": {
 				"navigationBarTitleText": "场景",
 				"app-plus": {
-					"bounce": "vertical",
 					"titleNView": {
 						"blurEffect": "extralight",
 						"backgroundColor": "#00FFFFFF",
@@ -44,7 +42,6 @@
 			"style": {
 				"navigationBarTitleText": "我的",
 				"app-plus": {
-					"bounce": "vertical",
 					"titleNView": {
 						"blurEffect": "extralight",
 						"backgroundColor": "#00FFFFFF",
@@ -86,19 +83,22 @@
 		{
 			"path": "pages/account/login",
 			"style": {
-				"navigationBarTitleText": "登录"
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/account/register",
 			"style": {
-				"navigationBarTitleText": "注册"
+				"navigationBarTitleText": "注册",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/account/reset",
 			"style": {
-				"navigationBarTitleText": "忘记密码"
+				"navigationBarTitleText": "忘记密码",
+				"navigationStyle": "custom"
 			}
 		}
 	],
@@ -106,7 +106,11 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "智能家居",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#FFFFFF"
+		"backgroundColor": "#FFFFFF",
+		"app-plus": {
+			"bounce": "none",
+			"scrollIndicator": "none"
+		}
 	},
 	"tabBar": {
 		"blurEffect": "extralight",
