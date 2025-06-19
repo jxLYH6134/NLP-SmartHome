@@ -3,10 +3,8 @@ import {
 } from './request.js'
 
 // 获取家庭组信息
-export function getFamilyGroup(familyGroupId) {
-	return authRequest.get('/api/family/get', {
-		familyGroupId: familyGroupId
-	})
+export function getFamilyGroup() {
+	return authRequest.get('/api/family/get')
 }
 
 // 创建家庭组
@@ -31,7 +29,16 @@ export function deleteFamilyGroup(familyGroupId) {
 	})
 }
 
-// 获取用户家庭组列表
-export function getUserFamilyGroups() {
-	return authRequest.get('/api/family/list')
+// 加入家庭组
+export function joinFamilyGroup(familyGroupId) {
+	return authRequest.post('/api/family/join', {
+		familyGroupId: familyGroupId
+	})
+}
+
+// 退出家庭组
+export function leaveFamilyGroup(familyGroupId) {
+	return authRequest.post('/api/family/leave', {
+		familyGroupId: familyGroupId
+	})
 }
