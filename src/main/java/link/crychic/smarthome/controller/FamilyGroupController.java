@@ -14,8 +14,8 @@ public class FamilyGroupController {
 
     @GetMapping("/get")
     public ApiResponse getFamilyGroup(
-            @RequestParam("familyGroupId") String familyGroupId) {
-        return familyGroupService.getFamilyGroup(familyGroupId);
+            @RequestHeader("X-User-Id") String ownerId) {
+        return familyGroupService.getFamilyGroup(ownerId);
     }
 
     @PostMapping("/create")
@@ -34,11 +34,6 @@ public class FamilyGroupController {
     @DeleteMapping("/delete")
     public ApiResponse deleteFamilyGroup(@RequestBody GeneralRequest request) {
         return familyGroupService.deleteFamilyGroup(request.getFamilyGroupId(), request.getOwnerId());
-    }
-
-    @GetMapping("/list")
-    public ApiResponse getUserFamilyGroups(@RequestHeader("X-User-Id") String userId) {
-        return familyGroupService.getUserFamilyGroups(userId);
     }
 
     @PostMapping("/join")
