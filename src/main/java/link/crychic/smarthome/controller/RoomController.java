@@ -14,10 +14,7 @@ public class RoomController {
 
     @PostMapping("/create")
     public ApiResponse createRoom(@RequestBody GeneralRequest request) {
-        return roomService.createRoom(
-                request.getRoomName(),
-                request.getOwnerId(),
-                request.getFamilyGroupId());
+        return roomService.createRoom(request.getRoomName(), request.getOwnerId());
     }
 
     @PutMapping("/update")
@@ -35,14 +32,12 @@ public class RoomController {
     }
 
     @GetMapping("/list/family")
-    public ApiResponse getFamilyGroupRooms(
-            @RequestParam("familyGroupId") String familyGroupId) {
+    public ApiResponse getFamilyGroupRooms(@RequestParam("familyGroupId") String familyGroupId) {
         return roomService.getFamilyGroupRooms(familyGroupId);
     }
 
     @GetMapping("/list/user")
-    public ApiResponse getUserRooms(
-            @RequestHeader("X-User-Id") String ownerId) {
+    public ApiResponse getUserRooms(@RequestHeader("X-User-Id") String ownerId) {
         return roomService.getUserRooms(ownerId);
     }
 }

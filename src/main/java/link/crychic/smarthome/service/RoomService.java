@@ -28,7 +28,7 @@ public class RoomService {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public ApiResponse createRoom(String roomName, String ownerId, String familyGroupId) {
+    public ApiResponse createRoom(String roomName, String ownerId) {
         try {
             if (roomName == null) {
                 return ApiResponse.error(2, "参数错误: 缺少roomName");
@@ -38,17 +38,9 @@ public class RoomService {
                 return ApiResponse.error(3, "用户不存在");
             }
 
-            if (familyGroupId != null) {
-                FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
-                if (familyGroup == null) {
-                    return ApiResponse.error(7, "家庭组不存在");
-                }
-            }
-
             Room room = new Room();
             room.setRoomName(roomName);
             room.setOwnerId(ownerId);
-            room.setFamilyGroupId(familyGroupId);
 
             roomRepository.save(room);
 
