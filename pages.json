@@ -2,14 +2,7 @@
 	"pages": [{
 			"path": "pages/device/device",
 			"style": {
-				"navigationBarTitleText": "设备",
-				"app-plus": {
-					"titleNView": {
-						"blurEffect": "extralight",
-						"backgroundColor": "#00FFFFFF",
-						"type": "float"
-					}
-				}
+				"navigationBarTitleText": "设备"
 			}
 		},
 		{
@@ -27,39 +20,19 @@
 		{
 			"path": "pages/scene/scene",
 			"style": {
-				"navigationBarTitleText": "场景",
-				"app-plus": {
-					"titleNView": {
-						"blurEffect": "extralight",
-						"backgroundColor": "#00FFFFFF",
-						"type": "float"
-					}
-				}
+				"navigationBarTitleText": "场景"
 			}
 		},
 		{
 			"path": "pages/profile/profile",
 			"style": {
-				"navigationBarTitleText": "我的",
-				"app-plus": {
-					"titleNView": {
-						"blurEffect": "extralight",
-						"backgroundColor": "#00FFFFFF",
-						"type": "float"
-					}
-				}
+				"navigationBarTitleText": "我的"
 			}
 		},
 		{
 			"path": "pages/profile/account",
 			"style": {
 				"navigationBarTitleText": "账号管理"
-			}
-		},
-		{
-			"path": "pages/profile/room",
-			"style": {
-				"navigationBarTitleText": "房间管理"
 			}
 		},
 		{
@@ -107,6 +80,7 @@
 		"navigationBarTitleText": "智能家居",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#FFFFFF",
+		"navigationStyle": "custom",
 		"app-plus": {
 			"bounce": "none",
 			"scrollIndicator": "none"
