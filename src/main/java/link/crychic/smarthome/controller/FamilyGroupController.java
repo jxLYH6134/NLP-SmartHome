@@ -13,8 +13,7 @@ public class FamilyGroupController {
     private FamilyGroupService familyGroupService;
 
     @GetMapping("/get")
-    public ApiResponse getFamilyGroup(
-            @RequestHeader("X-User-Id") String ownerId) {
+    public ApiResponse getFamilyGroup(@RequestHeader("X-User-Id") String ownerId) {
         return familyGroupService.getFamilyGroup(ownerId);
     }
 
@@ -25,15 +24,12 @@ public class FamilyGroupController {
 
     @PutMapping("/update")
     public ApiResponse updateFamilyGroup(@RequestBody GeneralRequest request) {
-        return familyGroupService.updateFamilyGroup(
-                request.getFamilyGroupId(),
-                request.getGroupName(),
-                request.getOwnerId());
+        return familyGroupService.updateFamilyGroup(request.getGroupName(), request.getOwnerId());
     }
 
     @DeleteMapping("/delete")
-    public ApiResponse deleteFamilyGroup(@RequestBody GeneralRequest request) {
-        return familyGroupService.deleteFamilyGroup(request.getFamilyGroupId(), request.getOwnerId());
+    public ApiResponse deleteFamilyGroup(@RequestHeader("X-User-Id") String ownerId) {
+        return familyGroupService.deleteFamilyGroup(ownerId);
     }
 
     @PostMapping("/join")
@@ -42,7 +38,7 @@ public class FamilyGroupController {
     }
 
     @PostMapping("/leave")
-    public ApiResponse leaveFamilyGroup(@RequestBody GeneralRequest request) {
-        return familyGroupService.leaveFamilyGroup(request.getFamilyGroupId(), request.getOwnerId());
+    public ApiResponse leaveFamilyGroup(@RequestHeader("X-User-Id") String ownerId) {
+        return familyGroupService.leaveFamilyGroup(ownerId);
     }
 }

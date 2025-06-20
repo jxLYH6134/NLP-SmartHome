@@ -56,14 +56,12 @@ public class DeviceController {
     }
 
     @GetMapping("/list/room")
-    public ApiResponse getRoomDevices(
-            @RequestParam("roomId") Integer roomId) {
+    public ApiResponse getRoomDevices(@RequestParam("roomId") Integer roomId) {
         return deviceService.getRoomDevices(roomId);
     }
 
     @GetMapping("/list/user")
-    public ApiResponse getUserDevices(
-            @RequestHeader("X-User-Id") String ownerId) {
+    public ApiResponse getUserDevices(@RequestHeader("X-User-Id") String ownerId) {
         return deviceService.getUserDevices(ownerId);
     }
 }

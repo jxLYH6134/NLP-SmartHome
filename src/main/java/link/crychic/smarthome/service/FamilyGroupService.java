@@ -77,23 +77,24 @@ public class FamilyGroupService {
         }
     }
 
-    public ApiResponse updateFamilyGroup(String familyGroupId, String groupName, String ownerId) {
+    public ApiResponse updateFamilyGroup(String groupName, String ownerId) {
         try {
-            if (familyGroupId == null) {
-                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
-            }
-
             if (groupName == null) {
                 return ApiResponse.error(2, "参数错误: 缺少groupName");
             }
 
-            FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
-            if (familyGroup == null) {
-                return ApiResponse.error(7, "家庭组不存在");
+            User user = userRepository.findById(ownerId).orElse(null);
+            if (user == null) {
+                return ApiResponse.error(3, "用户不存在");
             }
 
-            if (!familyGroup.getOwnerId().equals(ownerId)) {
-                return ApiResponse.error(4, "无权限修改此家庭组");
+            if (user.getFamilyGroupId() == null) {
+                return ApiResponse.error(7, "没有可以修改的家庭组");
+            }
+
+            FamilyGroup familyGroup = familyGroupRepository.findById(user.getFamilyGroupId()).orElse(null);
+            if (familyGroup == null) {
+                return ApiResponse.error(7, "家庭组不存在");
             }
 
             familyGroup.setGroupName(groupName);
@@ -105,24 +106,21 @@ public class FamilyGroupService {
         }
     }
 
-    public ApiResponse deleteFamilyGroup(String familyGroupId, String ownerId) {
+    public ApiResponse deleteFamilyGroup(String ownerId) {
         try {
+            User user = userRepository.findById(ownerId).orElse(null);
+            if (user == null) {
+                return ApiResponse.error(3, "用户不存在");
+            }
+            String familyGroupId = user.getFamilyGroupId();
+
             if (familyGroupId == null) {
-                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
+                return ApiResponse.error(7, "没有可以删除的家庭组");
             }
 
             FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
             if (familyGroup == null) {
                 return ApiResponse.error(7, "家庭组不存在");
-            }
-
-            if (!familyGroup.getOwnerId().equals(ownerId)) {
-                return ApiResponse.error(4, "无权限删除此家庭组");
-            }
-
-            User user = userRepository.findById(ownerId).orElse(null);
-            if (user == null) {
-                return ApiResponse.error(3, "用户不存在");
             }
 
             user.setFamilyGroupId(null);
@@ -166,22 +164,14 @@ public class FamilyGroupService {
         }
     }
 
-    public ApiResponse leaveFamilyGroup(String familyGroupId, String userId) {
+    public ApiResponse leaveFamilyGroup(String userId) {
         try {
-            if (familyGroupId == null) {
-                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
-            }
-
             User user = userRepository.findById(userId).orElse(null);
             if (user == null) {
                 return ApiResponse.error(3, "用户不存在");
             }
 
-            if (!familyGroupId.equals(user.getFamilyGroupId())) {
-                return ApiResponse.error(7, "用户不在此家庭组");
-            }
-
-            FamilyGroup familyGroup = familyGroupRepository.findById(familyGroupId).orElse(null);
+            FamilyGroup familyGroup = familyGroupRepository.findByOwnerId(userId);
             if (familyGroup != null && familyGroup.getOwnerId().equals(userId)) {
                 return ApiResponse.error(7, "组长不能退出家庭组");
             }
