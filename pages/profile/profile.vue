@@ -227,8 +227,8 @@
 		background: #ffffff;
 		border-radius: 20rpx;
 		padding: 40rpx 40rpx 0;
-		margin-top: 30rpx;
-		margin-bottom: 200rpx;
+		margin: 30rpx 0;
+		margin-bottom: var(--window-bottom);
 		box-shadow: 0 20rpx 60rpx rgba(25, 205, 144, 0.15);
 
 		.features-title {

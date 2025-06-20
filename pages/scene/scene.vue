@@ -40,6 +40,7 @@
 		<view class="add-button" @click="openCreateDialog">
 			<text class="add-icon">+</text>
 		</view>
+		<view class="edgeInsetBottom"></view>
 
 		<!-- 创建场景对话框 -->
 		<uni-popup ref="createPopup" type="dialog" :mask-click="false">
@@ -234,7 +235,7 @@
 				const duration = endTime - this.startTime
 
 				// 如果滑动距离超过40px或者快速滑动，则显示删除按钮
-				if (Math.abs(rule.translateX) > 40 || (Math.abs(rule.translateX) > 15 && duration < 300)) {
+				if (Math.abs(rule.translateX) > 70 || (Math.abs(rule.translateX) > 15 && duration < 300)) {
 					rule.translateX = -80
 				} else {
 					rule.translateX = 0
@@ -326,7 +327,7 @@
 				box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
 
 				.rule-item {
-					background: rgba(255, 255, 255, 0.85);
+					background: rgba(255, 255, 255, 0.9);
 					border-radius: 20rpx;
 					padding: 30rpx;
 					transition: transform 0.3s ease;
@@ -386,7 +387,7 @@
 
 	.add-button {
 		position: fixed;
-		bottom: 200rpx;
+		bottom: calc(var(--window-bottom) + 30rpx);
 		right: 40rpx;
 		width: 100rpx;
 		height: 100rpx;
@@ -397,9 +398,6 @@
 		justify-content: center;
 		box-shadow: 0 15rpx 40rpx rgba(25, 205, 144, 0.4);
 		z-index: 999;
-		/*  #ifdef  H5  */
-		bottom: 115rpx;
-		/*  #endif  */
 
 		.add-icon {
 			font-size: 48rpx;
