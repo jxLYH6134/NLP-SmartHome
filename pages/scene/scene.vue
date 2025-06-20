@@ -249,7 +249,7 @@
 	.scene-container {
 		padding: 20rpx;
 		padding-top: calc(var(--status-bar-height) + 60rpx);
-		min-height: calc(100vh - var(--status-bar-height) - 80rpx);
+		padding-bottom: 280rpx;
 
 		.ai-bg {
 			position: fixed;
