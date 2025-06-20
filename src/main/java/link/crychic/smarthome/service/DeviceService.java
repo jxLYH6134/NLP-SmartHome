@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class DeviceService {
         return filteredDevice;
     }
 
-    public ApiResponse getDevice(String deviceId) {
+    public ApiResponse getDevice(String deviceId, String ownerId) {
         try {
             if (deviceId == null) {
                 return ApiResponse.error(2, "参数错误: 缺少deviceId");
@@ -47,6 +48,10 @@ public class DeviceService {
             Device device = deviceRepository.findById(deviceId).orElse(null);
             if (device == null) {
                 return ApiResponse.error(5, "设备不存在");
+            }
+
+            if (!Objects.equals(device.getOwnerId(), ownerId)) {
+                return ApiResponse.error(4, "无权限查看此设备");
             }
 
             return ApiResponse.success(createFilteredDevice(device));

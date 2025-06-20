@@ -19,8 +19,9 @@ public class DeviceController {
 
     @GetMapping("/get")
     public ApiResponse getDevice(
-            @RequestParam("deviceId") String deviceId) {
-        return deviceService.getDevice(deviceId);
+            @RequestParam("deviceId") String deviceId,
+            @RequestHeader("X-User-Id") String ownerId) {
+        return deviceService.getDevice(deviceId, ownerId);
     }
 
     @PostMapping("/control")
