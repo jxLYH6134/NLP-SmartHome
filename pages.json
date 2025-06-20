@@ -87,7 +87,7 @@
 		}
 	},
 	"tabBar": {
-		"blurEffect": "extralight",
+		"blurEffect": "light",
 		"color": "#8A8A8A",
 		"selectedColor": "#19CD90",
 		"borderStyle": "black",
