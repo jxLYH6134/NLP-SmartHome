@@ -48,46 +48,6 @@
 			</view>
 		</view>
 
-		<!-- 功能介绍 -->
-		<view class="features">
-			<view class="features-title">
-				<text>主要功能</text>
-			</view>
-			<view class="features-list">
-				<view class="feature-item">
-					<text class="feature-icon">🏡</text>
-					<view class="feature-content">
-						<text class="feature-title">智能设备管理</text>
-						<text class="feature-desc">统一管理家中所有智能设备，实现远程控制</text>
-					</view>
-				</view>
-
-				<view class="feature-item">
-					<text class="feature-icon">👨‍👩‍👧‍👦</text>
-					<view class="feature-content">
-						<text class="feature-title">家庭组管理</text>
-						<text class="feature-desc">创建家庭组，与家人共享智能设备控制权限</text>
-					</view>
-				</view>
-
-				<view class="feature-item">
-					<text class="feature-icon">🎭</text>
-					<view class="feature-content">
-						<text class="feature-title">智能场景</text>
-						<text class="feature-desc">控制设备，一句话的事</text>
-					</view>
-				</view>
-
-				<view class="feature-item">
-					<text class="feature-icon">🔐</text>
-					<view class="feature-content">
-						<text class="feature-title">安全保障</text>
-						<text class="feature-desc">多重安全验证，保护您的隐私和数据安全</text>
-					</view>
-				</view>
-			</view>
-		</view>
-
 		<!-- 版权信息 -->
 		<view class="copyright">
 			<text>© 2025 SmartHome Team. All rights reserved.</text>
@@ -208,64 +168,9 @@
 		}
 	}
 
-	.features {
-		background: #ffffff;
-		border-radius: 20rpx;
-		padding: 40rpx;
-		margin-bottom: 30rpx;
-		box-shadow: 0 20rpx 60rpx rgba(25, 205, 144, 0.15);
-
-		.features-title {
-			margin-bottom: 40rpx;
-
-			text {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #333;
-			}
-		}
-	}
-
-	.feature-item {
-		display: flex;
-		align-items: flex-start;
-		margin-bottom: 40rpx;
-
-		&:last-child {
-			margin-bottom: 0;
-		}
-
-		.feature-icon {
-			font-size: 40rpx;
-			margin-right: 24rpx;
-			margin-top: 8rpx;
-		}
-
-		.feature-content {
-			flex: 1;
-
-			.feature-title {
-				display: block;
-				font-size: 30rpx;
-				color: #333;
-				font-weight: 500;
-				margin-bottom: 12rpx;
-			}
-
-			.feature-desc {
-				display: block;
-				font-size: 26rpx;
-				color: #666666;
-				line-height: 1.5;
-			}
-		}
-	}
-
 	.copyright {
-		background: #ffffff;
-		border-radius: 20rpx;
-		padding: 40rpx 20rpx;
-		box-shadow: 0 20rpx 60rpx rgba(25, 205, 144, 0.15);
+		padding-top: 30rpx;
+		padding-bottom: 60rpx;
 		text-align: center;
 
 		text {

@@ -57,6 +57,52 @@
 				<text class="menu-arrow">></text>
 			</view>
 		</view>
+
+		<!-- 特色功能 -->
+		<view class="features">
+			<view class="features-title">
+				<text>主要功能</text>
+			</view>
+			<view class="feature-item">
+				<view class="feature-icon">
+					<text class="icon-placeholder">🏡</text>
+				</view>
+				<view class="feature-content">
+					<text class="feature-title">智能设备管理</text>
+					<text class="feature-desc">统一管理家中所有智能设备，实现远程控制</text>
+				</view>
+			</view>
+
+			<view class="feature-item">
+				<view class="feature-icon">
+					<text class="icon-placeholder">👨‍👩‍👧‍👦</text>
+				</view>
+				<view class="feature-content">
+					<text class="feature-title">家庭组管理</text>
+					<text class="feature-desc">创建家庭组，与家人共享智能设备控制权限</text>
+				</view>
+			</view>
+
+			<view class="feature-item">
+				<view class="feature-icon">
+					<text class="icon-placeholder">🎭</text>
+				</view>
+				<view class="feature-content">
+					<text class="feature-title">智能场景</text>
+					<text class="feature-desc">控制设备，一句话的事</text>
+				</view>
+			</view>
+
+			<view class="feature-item">
+				<view class="feature-icon">
+					<text class="icon-placeholder">🔐</text>
+				</view>
+				<view class="feature-content">
+					<text class="feature-title">安全保障</text>
+					<text class="feature-desc">多重安全验证，保护您的隐私和数据安全</text>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -174,6 +220,66 @@
 		.menu-arrow {
 			color: #19CD90;
 			font-size: 32rpx;
+		}
+	}
+
+	.features {
+		background: #ffffff;
+		border-radius: 20rpx;
+		padding: 40rpx 40rpx 0;
+		margin-top: 30rpx;
+		margin-bottom: 200rpx;
+		box-shadow: 0 20rpx 60rpx rgba(25, 205, 144, 0.15);
+
+		.features-title {
+			margin-bottom: 10rpx;
+
+			text {
+				font-size: 32rpx;
+				font-weight: bold;
+				color: #333;
+			}
+		}
+	}
+
+	.feature-item {
+		display: flex;
+		align-items: center;
+		padding: 30rpx 0;
+		border-bottom: 2rpx solid #E8F5F0;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		.feature-icon {
+			width: 80rpx;
+			height: 80rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-right: 30rpx;
+
+			.icon-placeholder {
+				font-size: 40rpx;
+			}
+		}
+
+		.feature-content {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+
+			.feature-title {
+				font-size: 32rpx;
+				color: #333;
+				margin-bottom: 8rpx;
+			}
+
+			.feature-desc {
+				font-size: 24rpx;
+				color: #999;
+			}
 		}
 	}
 </style>
