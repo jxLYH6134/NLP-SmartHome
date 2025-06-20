@@ -64,7 +64,7 @@
 							</text>
 						</view>
 						<switch :checked="room.familyGroupId === familyGroup.familyGroupId"
-							@change="toggleRoom(room, familyGroup.familyGroupId)" class="room-switch" />
+							@change="toggleRoom(room, familyGroup.familyGroupId)" class="room-switch" color="#19CD90" />
 					</view>
 				</view>
 			</view>
@@ -679,7 +679,7 @@
 					color: #999;
 
 					&.active {
-						color: #007aff;
+						color: #19CD90;
 					}
 				}
 			}
