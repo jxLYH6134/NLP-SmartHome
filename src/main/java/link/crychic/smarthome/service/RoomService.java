@@ -28,23 +28,6 @@ public class RoomService {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public ApiResponse getRoom(Integer roomId) {
-        try {
-            if (roomId == null) {
-                return ApiResponse.error(2, "参数错误: 缺少roomId");
-            }
-
-            Room room = roomRepository.findById(roomId).orElse(null);
-            if (room == null) {
-                return ApiResponse.error(6, "房间不存在");
-            }
-
-            return ApiResponse.success(room);
-        } catch (Exception e) {
-            return ApiResponse.error(100, "操作失败");
-        }
-    }
-
     public ApiResponse createRoom(String roomName, String ownerId, String familyGroupId) {
         try {
             if (roomName == null) {

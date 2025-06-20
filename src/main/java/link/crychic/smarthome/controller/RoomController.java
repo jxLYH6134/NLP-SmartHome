@@ -12,12 +12,6 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @GetMapping("/get")
-    public ApiResponse getRoom(
-            @RequestParam("roomId") Integer roomId) {
-        return roomService.getRoom(roomId);
-    }
-
     @PostMapping("/create")
     public ApiResponse createRoom(@RequestBody GeneralRequest request) {
         return roomService.createRoom(
