@@ -1,5 +1,6 @@
 <template>
 	<view class="scene-container">
+		<image src="/static/AI-BG.jpg" class="ai-bg"></image>
 		<!-- 顶部AI图片和描述 -->
 		<view class="header-section">
 			<view class="ai-image">
@@ -40,7 +41,6 @@
 		<view class="add-button" @click="openCreateDialog">
 			<text class="add-icon">+</text>
 		</view>
-		<view class="edgeInsetBottom"></view>
 
 		<!-- 创建场景对话框 -->
 		<uni-popup ref="createPopup" type="dialog" :mask-click="false">
@@ -223,7 +223,7 @@
 
 				// 只允许向左滑动
 				if (deltaX < 0) {
-					rule.translateX = Math.max(deltaX, -80) // 最大滑动80px
+					rule.translateX = Math.max(deltaX, -70) // 最大滑动80px
 				} else {
 					rule.translateX = 0
 				}
@@ -235,8 +235,8 @@
 				const duration = endTime - this.startTime
 
 				// 如果滑动距离超过40px或者快速滑动，则显示删除按钮
-				if (Math.abs(rule.translateX) > 70 || (Math.abs(rule.translateX) > 15 && duration < 300)) {
-					rule.translateX = -80
+				if (Math.abs(rule.translateX) > 60 || (Math.abs(rule.translateX) > 15 && duration < 300)) {
+					rule.translateX = -70
 				} else {
 					rule.translateX = 0
 				}
@@ -250,27 +250,26 @@
 		padding: 20rpx;
 		padding-top: calc(var(--status-bar-height) + 60rpx);
 		min-height: calc(100vh - var(--status-bar-height) - 80rpx);
-		background-image: url('/static/AI-BG.jpg');
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-attachment: fixed;
-		position: relative;
 
-		&::before {
-			content: '';
+		.ai-bg {
 			position: fixed;
 			top: 0;
 			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(255, 255, 255, 0.4);
-			z-index: 1;
+			width: 100vw;
+			height: 100vh;
+			z-index: -1;
+			object-fit: cover;
 		}
 
-		>* {
-			position: relative;
-			z-index: 2;
+		.ai-bg::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255, 255, 255, 0.4);
+			pointer-events: none;
 		}
 	}
 
@@ -352,7 +351,7 @@
 				.delete-button {
 					position: absolute;
 					top: 0;
-					right: -20rpx;
+					right: -30rpx;
 					bottom: 0;
 					width: 190rpx;
 					background: #ff4757;
@@ -360,7 +359,7 @@
 					align-items: center;
 					justify-content: center;
 					z-index: 1;
-					border-radius: 0 20rpx 20rpx 0;
+					border-radius: 0 22rpx 22rpx 0;
 
 					.delete-text {
 						color: #fff;
