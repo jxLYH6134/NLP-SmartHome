@@ -1,6 +1,8 @@
 package link.crychic.smarthome.service;
 
 import link.crychic.smarthome.entity.Device;
+import link.crychic.smarthome.entity.Room;
+import link.crychic.smarthome.entity.User;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.model.DeviceRequest;
 import link.crychic.smarthome.repository.DeviceRepository;
@@ -9,7 +11,10 @@ import link.crychic.smarthome.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceService {
@@ -129,16 +134,31 @@ public class DeviceService {
 
     public ApiResponse getUserDevices(String ownerId) {
         try {
-            if (!userRepository.existsById(ownerId)) {
+            User user = userRepository.findById(ownerId).orElse(null);
+            if (user == null) {
                 return ApiResponse.error(3, "用户不存在");
             }
 
-            List<Device> devices = deviceRepository.findByOwnerId(ownerId);
+            // 获取用户的全部设备（包括在房间内的设备）
+            List<Device> userDevices = deviceRepository.findByOwnerId(ownerId);
+            Set<Device> allDevices = new HashSet<>(userDevices);
+
+            // 如果用户属于家庭组，追加家庭组共享房间中的设备
+            if (user.getFamilyGroupId() != null) {
+                // 获取家庭组中的所有房间
+                List<Room> familyRooms = roomRepository.findByFamilyGroupId(user.getFamilyGroupId());
+
+                // 获取这些房间中的所有设备
+                for (Room room : familyRooms) {
+                    List<Device> roomDevices = deviceRepository.findByRoomId(room.getRoomId());
+                    allDevices.addAll(roomDevices); // HashSet自动去重
+                }
+            }
 
             // 移除敏感字段（ownerId和roomId）
-            List<DeviceRequest> filteredDevices = devices.stream()
+            List<DeviceRequest> filteredDevices = allDevices.stream()
                     .map(this::createFilteredDevice)
-                    .toList();
+                    .collect(Collectors.toList());
 
             return ApiResponse.success(filteredDevices);
         } catch (Exception e) {
