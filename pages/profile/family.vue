@@ -242,7 +242,6 @@
 
 				try {
 					const response = await updateFamilyGroup(
-						this.familyGroup.familyGroupId,
 						this.editGroupName.trim()
 					)
 					if (response.code === 0) {
@@ -301,7 +300,7 @@
 						data: inviteText,
 						success: () => {
 							uni.showToast({
-								title: '邀请码已复制到剪贴板',
+								title: '邀请码已复制',
 								icon: 'success'
 							})
 						},
@@ -404,7 +403,7 @@
 					success: async (res) => {
 						if (res.confirm) {
 							try {
-								const response = await deleteFamilyGroup(group.familyGroupId)
+								const response = await deleteFamilyGroup()
 								if (response.code === 0) {
 									uni.showToast({
 										title: '删除成功'
@@ -435,7 +434,7 @@
 					success: async (res) => {
 						if (res.confirm) {
 							try {
-								const response = await leaveFamilyGroup(group.familyGroupId)
+								const response = await leaveFamilyGroup()
 								if (response.code === 0) {
 									uni.showToast({
 										title: '退出家庭组成功'
