@@ -3,6 +3,7 @@ package link.crychic.smarthome.service;
 import link.crychic.smarthome.entity.Device;
 import link.crychic.smarthome.entity.FamilyGroup;
 import link.crychic.smarthome.entity.Room;
+import link.crychic.smarthome.entity.User;
 import link.crychic.smarthome.model.ApiResponse;
 import link.crychic.smarthome.repository.DeviceRepository;
 import link.crychic.smarthome.repository.FamilyGroupRepository;
@@ -11,7 +12,9 @@ import link.crychic.smarthome.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RoomService {
@@ -116,33 +119,24 @@ public class RoomService {
         }
     }
 
-    public ApiResponse getFamilyGroupRooms(String familyGroupId) {
-        try {
-            if (familyGroupId == null) {
-                return ApiResponse.error(2, "参数错误: 缺少familyGroupId");
-            }
-
-            if (!familyGroupRepository.existsById(familyGroupId)) {
-                return ApiResponse.error(7, "家庭组不存在");
-            }
-
-            List<Room> rooms = roomRepository.findByFamilyGroupId(familyGroupId);
-
-            return ApiResponse.success(rooms);
-        } catch (Exception e) {
-            return ApiResponse.error(100, "操作失败");
-        }
-    }
-
     public ApiResponse getUserRooms(String ownerId) {
         try {
-            if (!userRepository.existsById(ownerId)) {
+            User user = userRepository.findById(ownerId).orElse(null);
+            if (user == null) {
                 return ApiResponse.error(3, "用户不存在");
             }
 
-            List<Room> rooms = roomRepository.findByOwnerId(ownerId);
+            // 获取用户自己的房间
+            List<Room> userRooms = roomRepository.findByOwnerId(ownerId);
+            Set<Room> allRooms = new HashSet<>(userRooms);
 
-            return ApiResponse.success(rooms);
+            // 如果用户属于家庭组，追加家庭组的房间
+            if (user.getFamilyGroupId() != null) {
+                List<Room> familyRooms = roomRepository.findByFamilyGroupId(user.getFamilyGroupId());
+                allRooms.addAll(familyRooms); // HashSet自动去重
+            }
+
+            return ApiResponse.success(allRooms);
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }
