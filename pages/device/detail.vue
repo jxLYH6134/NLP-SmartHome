@@ -25,8 +25,9 @@
 			<view class="room-selector">
 				<text class="selector-label">所属房间</text>
 				<uni-data-select v-model="selectedRoomId" :localdata="roomOptions" @change="onRoomChange"
-					placeholder="请选择房间">
+					placeholder="请选择房间" :disabled="!isDeviceOwner">
 				</uni-data-select>
+				<text v-if="!isDeviceOwner" class="permission-hint">此设备来自家庭组共享，无法修改房间</text>
 			</view>
 
 
@@ -40,7 +41,8 @@
 				<view class="control-item">
 					<text class="control-label">目标温度: {{ device.params.targetTemp }}°C</text>
 					<slider :min="5" :max="20" :value="device.params.targetTemp"
-						@change="onSliderChange('targetTemp', $event)" class="control-slider" activeColor="#19CD90"></slider>
+						@change="onSliderChange('targetTemp', $event)" class="control-slider" activeColor="#19CD90">
+					</slider>
 				</view>
 				<view class="status-item">
 					<text class="status-label">内部温度</text>
@@ -72,12 +74,14 @@
 				<view class="control-item">
 					<text class="control-label">目标温度: {{ device.params.targetTemp }}°C</text>
 					<slider :min="16" :max="30" :value="device.params.targetTemp"
-						@change="onSliderChange('targetTemp', $event)" class="control-slider" activeColor="#19CD90"></slider>
+						@change="onSliderChange('targetTemp', $event)" class="control-slider" activeColor="#19CD90">
+					</slider>
 				</view>
 				<view class="control-item">
 					<text class="control-label">风速: {{ device.params.fanSpeed }}</text>
 					<slider :min="1" :max="5" :value="device.params.fanSpeed"
-						@change="onSliderChange('fanSpeed', $event)" class="control-slider" activeColor="#19CD90"></slider>
+						@change="onSliderChange('fanSpeed', $event)" class="control-slider" activeColor="#19CD90">
+					</slider>
 				</view>
 			</view>
 
@@ -91,12 +95,14 @@
 				<view class="control-item">
 					<text class="control-label">亮度: {{ device.params.brightness }}%</text>
 					<slider :min="1" :max="100" :value="device.params.brightness"
-						@change="onSliderChange('brightness', $event)" class="control-slider" activeColor="#19CD90"></slider>
+						@change="onSliderChange('brightness', $event)" class="control-slider" activeColor="#19CD90">
+					</slider>
 				</view>
 				<view class="control-item">
 					<text class="control-label">色温: {{ device.params.colorTemperature }}K</text>
 					<slider :min="4500" :max="8000" :value="device.params.colorTemperature"
-						@change="onSliderChange('colorTemperature', $event)" class="control-slider" activeColor="#19CD90"></slider>
+						@change="onSliderChange('colorTemperature', $event)" class="control-slider"
+						activeColor="#19CD90"></slider>
 				</view>
 			</view>
 
@@ -199,17 +205,24 @@
 				selectedRoomId: '',
 				editDeviceName: '',
 				// 存储用户控制的值，防止被自动刷新覆盖
-				userControlledValues: {}
+				userControlledValues: {},
+				currentUserId: ''
 			}
 		},
 		onLoad(options) {
 			this.deviceId = options.deviceId
+			this.currentUserId = uni.getStorageSync('userId')
 			this.loadDeviceInfo()
 			this.loadRooms()
 			this.startAutoRefresh()
 		},
 		onUnload() {
 			this.stopAutoRefresh()
+		},
+		computed: {
+			isDeviceOwner() {
+				return this.device && this.device.ownerId === this.currentUserId
+			}
 		},
 		methods: {
 			async loadDeviceInfo(isRefresh = false) {
@@ -351,6 +364,13 @@
 			},
 
 			async onRoomChange(value) {
+				if (!this.isDeviceOwner) {
+					uni.showToast({
+						title: '无权限修改',
+						icon: 'none'
+					})
+					return
+				}
 				try {
 					await updateDevice(this.deviceId, undefined, value)
 					this.device.roomId = value
@@ -482,6 +502,13 @@
 			color: #333;
 			font-weight: 500;
 			margin-bottom: 20rpx;
+			display: block;
+		}
+
+		.permission-hint {
+			font-size: 24rpx;
+			color: #999;
+			margin-top: 10rpx;
 			display: block;
 		}
 	}
