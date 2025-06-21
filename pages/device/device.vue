@@ -15,7 +15,8 @@
 
 		<!-- 设备列表 -->
 		<view class="device-list">
-			<view class="device-grid">
+			<!-- 有设备时显示设备网格 -->
+			<view v-if="devices.length > 0" class="device-grid">
 				<view v-for="device in devices" :key="device.deviceId" class="device-card" @click="goToDetail(device)">
 					<view class="device-icon">
 						<text class="icon">{{ getDeviceIcon(device.type) }}</text>
@@ -25,6 +26,17 @@
 						<text class="device-status"
 							:class="{ online: checkDeviceStatus(device) === '在线' }">{{ checkDeviceStatus(device) }}</text>
 					</view>
+				</view>
+			</view>
+
+			<!-- 没有设备时显示提示信息 -->
+			<view v-else class="empty-state">
+				<view class="empty-icon">
+					<text class="icon">📱</text>
+				</view>
+				<view class="empty-text">
+					<text class="title">暂无设备</text>
+					<text class="subtitle">{{ selectedRoomId ? '当前房间还没有设备' : '您还没有添加任何设备' }}</text>
 				</view>
 			</view>
 		</view>
@@ -400,6 +412,44 @@
 							color: #19CD90;
 						}
 					}
+				}
+			}
+		}
+
+		// 空状态样式
+		.empty-state {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 100rpx 40rpx;
+			text-align: center;
+
+			.empty-icon {
+				margin-bottom: 40rpx;
+
+				.icon {
+					font-size: 120rpx;
+					opacity: 0.6;
+				}
+			}
+
+			.empty-text {
+				margin-bottom: 60rpx;
+
+				.title {
+					display: block;
+					font-size: 36rpx;
+					font-weight: 600;
+					color: #333;
+					margin-bottom: 20rpx;
+				}
+
+				.subtitle {
+					display: block;
+					font-size: 28rpx;
+					color: #666;
+					line-height: 1.5;
 				}
 			}
 		}
