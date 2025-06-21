@@ -69,7 +69,7 @@ public class DeviceService {
                 }
             }
 
-            return ApiResponse.success(createFilteredDevice(device));
+            return ApiResponse.success(device);
         } catch (Exception e) {
             return ApiResponse.error(100, "操作失败");
         }
