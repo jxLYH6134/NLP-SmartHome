@@ -51,7 +51,22 @@ public class DeviceService {
             }
 
             if (!Objects.equals(device.getOwnerId(), ownerId)) {
-                return ApiResponse.error(4, "无权限查看此设备");
+                // 如果设备没有分配到房间，则无法通过家庭组权限访问
+                if (device.getRoomId() == null) {
+                    return ApiResponse.error(4, "无权限查看此设备");
+                }
+
+                // 检查用户是否在家庭组中，且设备所在房间被共享到该家庭组
+                User user = userRepository.findById(ownerId).orElse(null);
+                if (user == null || user.getFamilyGroupId() == null) {
+                    return ApiResponse.error(4, "无权限查看此设备");
+                }
+
+                // 检查设备所在房间是否被共享到用户的家庭组
+                Room room = roomRepository.findById(device.getRoomId()).orElse(null);
+                if (room == null || !Objects.equals(room.getFamilyGroupId(), user.getFamilyGroupId())) {
+                    return ApiResponse.error(4, "无权限查看此设备");
+                }
             }
 
             return ApiResponse.success(createFilteredDevice(device));
