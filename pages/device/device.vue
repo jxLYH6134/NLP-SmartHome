@@ -104,6 +104,8 @@
 		},
 		onShow() {
 			// 页面显示时重新启动定时器
+			this.loadRooms()
+			this.loadDevices()
 			this.startAutoRefresh()
 		},
 		onHide() {
