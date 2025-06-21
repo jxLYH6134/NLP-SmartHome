@@ -12,7 +12,7 @@
 			}
 		},
 		{
-			"path": "pages/device/device-detail",
+			"path": "pages/device/detail",
 			"style": {
 				"navigationBarTitleText": "设备详情"
 			}
