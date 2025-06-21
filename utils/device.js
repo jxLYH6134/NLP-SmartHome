@@ -19,11 +19,16 @@ export function controlDevice(deviceId, params) {
 
 // 更新设备信息
 export function updateDevice(deviceId, deviceName, roomId) {
-	return authRequest.put('/api/device/update', {
-		deviceId: deviceId,
-		deviceName: deviceName,
-		roomId: roomId
-	})
+	const params = {
+		deviceId: deviceId
+	}
+	if (deviceName !== undefined) {
+		params.deviceName = deviceName
+	}
+	if (roomId !== undefined) {
+		params.roomId = roomId
+	}
+	return authRequest.put('/api/device/update', params)
 }
 
 // 删除设备

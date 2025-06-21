@@ -6,7 +6,7 @@
 			}
 		},
 		{
-			"path": "pages/device/add-device",
+			"path": "pages/device/add",
 			"style": {
 				"navigationBarTitleText": "添加设备"
 			}
