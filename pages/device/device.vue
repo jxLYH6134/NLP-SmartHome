@@ -89,7 +89,7 @@
 
 <script>
 	import {
-		getUserRooms,
+		getAllRooms,
 		createRoom
 	} from '@/utils/room.js'
 	import {
@@ -131,7 +131,7 @@
 			// 加载房间列表
 			async loadRooms() {
 				try {
-					const res = await getUserRooms()
+					const res = await getAllRooms()
 					if (res.code === 0) {
 						let rooms = res.data || []
 						// 按房间名称排序，如果名称相同则按房间ID排序

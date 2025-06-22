@@ -25,7 +25,12 @@ export function deleteRoom(roomId) {
 	})
 }
 
-// 获取房间列表
+// 获取个人房间列表
 export function getUserRooms() {
-	return authRequest.get('/api/room/list')
+	return authRequest.get('/api/room/user')
+}
+
+// 获取全部房间列表
+export function getAllRooms() {
+	return authRequest.get('/api/room/family')
 }
