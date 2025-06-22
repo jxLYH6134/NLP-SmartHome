@@ -40,7 +40,7 @@
 				</view>
 				<view class="control-item">
 					<text class="control-label">目标温度: {{ device.params.targetTemp }}°C</text>
-					<slider :min="5" :max="20" :value="device.params.targetTemp"
+					<slider :min="0" :max="20" :value="device.params.targetTemp"
 						@change="onSliderChange('targetTemp', $event)" class="control-slider" activeColor="#19CD90">
 					</slider>
 				</view>
@@ -100,7 +100,7 @@
 				</view>
 				<view class="control-item">
 					<text class="control-label">色温: {{ device.params.colorTemperature }}K</text>
-					<slider :min="4500" :max="8000" :value="device.params.colorTemperature"
+					<slider :min="2700" :max="6000" :value="device.params.colorTemperature"
 						@change="onSliderChange('colorTemperature', $event)" class="control-slider"
 						activeColor="#19CD90"></slider>
 				</view>
