@@ -33,7 +33,6 @@
 {
     "command": "warning",
     "deviceId": "114514",
-    "type": "refrigerator",
     "params": "冰箱门长时间开启！"
 }
 ```
@@ -50,37 +49,23 @@
     }
 }
 ```
-- params中只包含需要更新的字段
 
 ## API接口
 
 ### 发送控制命令
-**POST** `/api/device/control/send`
+**POST** `/api/device/control`
 
 请求体:
 ```json
 {
     "deviceId": "114514",
     "params": {
-        "freeze": false,
+        "freeze": true,
         "targetTemp": 25
     }
 }
 ```
-
-### 更新设备参数（同时发送MQTT控制）
-**PUT** `/api/device/update`
-
-请求体:
-```json
-{
-    "deviceId": "114514",
-    "params": {
-        "freeze": true
-    }
-}
-```
-- 更新数据库的同时会自动发送MQTT控制消息
+- params中可以只包含需要更新的字段
 
 ## 功能特性
 
