@@ -114,8 +114,8 @@ public class ApiService {
             String token = UUID.randomUUID().toString();
             String authKey = request.getUserId() + ":auth";
 
-            // 存储令牌到Redis，设置5分钟过期
-            redisTemplate.opsForValue().set(authKey, token, 5, TimeUnit.MINUTES);
+            // 存储令牌到Redis，设置60分钟过期
+            redisTemplate.opsForValue().set(authKey, token, 60, TimeUnit.MINUTES);
 
             // 返回成功响应，包含Authorization令牌
             return ApiResponse.success(token);

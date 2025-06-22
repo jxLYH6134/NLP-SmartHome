@@ -46,7 +46,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 刷新token的TTL
-        redisTemplate.expire(authKey, 5, TimeUnit.MINUTES);
+        redisTemplate.expire(authKey, 60, TimeUnit.MINUTES);
 
         return true;
     }
