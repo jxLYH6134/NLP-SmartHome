@@ -40,7 +40,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT已连接");
         // 连接后订阅主题
-        msg_id = esp_mqtt_client_subscribe(client, "/topic/receive", 0);
+        msg_id = esp_mqtt_client_subscribe(client, "/control", 0);
         ESP_LOGI(TAG, "订阅成功, msg_id=%d", msg_id);
         break;
 
@@ -49,43 +49,59 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
         break;
 
     case MQTT_EVENT_DATA:
-        ESP_LOGI(TAG, "收到MQTT数据");
-        printf("主题=%.*s\r\n", event->topic_len, event->topic);
-        printf("数据=%.*s\r\n", event->data_len, event->data);
+        ESP_LOGI(TAG, "收到MQTT数据: %.*s", event->data_len, event->data);
 
-        // 解析收到的数据
-        if (event->data_len > 0) {
-            cJSON *root = cJSON_Parse(event->data);
-            if (root) {
-                cJSON *cmd = cJSON_GetObjectItem(root, "command");
-                cJSON *params = cJSON_GetObjectItem(root, "params");
+        if (event->data_len <= 0)
+            break;
 
-                if (cJSON_IsString(cmd) && params &&
-                    strcmp(cmd->valuestring, "control") == 0) {
-                    // cJSON *id = cJSON_GetObjectItem(params, "lightId");
+        cJSON *root = cJSON_Parse(event->data);
+        if (!root) {
+            ESP_LOGE(TAG, "JSON解析失败");
+            break;
+        }
 
-                    // if (cJSON_IsString(id) &&
-                    //     strcmp(id->valuestring, lightId) == 0) {
-                    //     cJSON *rgb = cJSON_GetObjectItem(params, "rgb_state");
-                    //     cJSON *autoMod = cJSON_GetObjectItem(params, "autoMod");
+        // 验证deviceId
+        cJSON *deviceIdJson = cJSON_GetObjectItem(root, "deviceId");
+        extern const char *deviceId;
+        if (!cJSON_IsString(deviceIdJson) ||
+            strcmp(deviceIdJson->valuestring, deviceId) != 0) {
+            ESP_LOGE(TAG, "设备ID验证失败");
+            cJSON_Delete(root);
+            break;
+        }
 
-                    //     if (cJSON_IsNumber(rgb) && cJSON_IsBool(autoMod)) {
-                    //         uint8_t new_rgb = rgb->valueint;
-                    //         rgb_state = new_rgb % 8;
-                    //         auto_mode = cJSON_IsTrue(autoMod);
-                    //         update_rgb_output(rgb_state);
-                    //         ESP_LOGI(TAG, "更新状态: RGB=%d, 模式=%s",
-                    //                  rgb_state, auto_mode ? "自动" : "手动");
-                    //     }
-                    // } else {
-                    //     ESP_LOGE(TAG, "非本设备ID或格式错误");
-                    // }
+        // 处理参数
+        cJSON *params = cJSON_GetObjectItem(root, "params");
+        if (params) {
+            extern int8_t target_temp, relay_state;
+            extern void nvs_write_int(const char *key, int32_t value);
+            extern void gpio_set_level(int gpio_num, uint32_t level);
+
+            // 处理targetTemp
+            cJSON *targetTempJson = cJSON_GetObjectItem(params, "targetTemp");
+            if (cJSON_IsNumber(targetTempJson)) {
+                int temp = targetTempJson->valueint;
+                if (temp >= 0 && temp <= 20) {
+                    target_temp = temp;
+                    nvs_write_int("target_temp", target_temp);
+                    ESP_LOGI(TAG, "更新目标温度: %d°C", target_temp);
+                } else {
+                    ESP_LOGE(TAG, "目标温度超出范围(0-20°C): %d", temp);
                 }
-                cJSON_Delete(root);
-            } else {
-                ESP_LOGE(TAG, "JSON解析失败");
+            }
+
+            // 处理freeze
+            cJSON *freezeJson = cJSON_GetObjectItem(params, "freeze");
+            if (cJSON_IsBool(freezeJson)) {
+                relay_state = cJSON_IsTrue(freezeJson) ? 1 : 0;
+                nvs_write_int("relay_state", relay_state);
+                gpio_set_level(33, relay_state);
+                ESP_LOGI(TAG, "更新制冷状态: %s",
+                         relay_state ? "开启" : "关闭");
             }
         }
+
+        cJSON_Delete(root);
         break;
 
     case MQTT_EVENT_ERROR:

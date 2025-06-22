@@ -23,7 +23,7 @@
 #define RELAY_GPIO GPIO_NUM_33
 
 // 状态变量
-const char *deviceId = "114514";
+const char *deviceId = "4f24ed49-b990-46f3-8687-26e9da737387";
 int8_t target_temp = 10;
 int8_t relay_state = 0;
 
@@ -101,18 +101,19 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
 void send_mqtt_status() {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "command", "status");
+    cJSON_AddStringToObject(root, "deviceId", deviceId);
+    cJSON_AddStringToObject(root, "type", "refrigerator");
     cJSON *params = cJSON_AddObjectToObject(root, "params");
-    cJSON_AddStringToObject(params, "deviceId", deviceId);
-    cJSON_AddBoolToObject(params, "freeze", relay_state);
+    cJSON_AddBoolToObject(params, "freeze", freeze);
     cJSON_AddBoolToObject(params, "opened", gpio_get_level(HALL_GPIO));
     cJSON_AddNumberToObject(params, "targetTemp", target_temp);
     double temp = dht11_sensor.temperature;
     double rounded_temp = (int)(temp * 10 + 0.5) / 10.0;
-    cJSON_AddNumberToObject(params, "currentTemp", rounded_temp);
-    cJSON_AddNumberToObject(params, "currentHumi", dht11_sensor.humidity);
+    cJSON_AddNumberToObject(params, "insideTemp", rounded_temp);
+    cJSON_AddNumberToObject(params, "insideHumi", dht11_sensor.humidity);
 
     char *json_str = cJSON_PrintUnformatted(root);
-    mqtt_publish("/topic/send", json_str);
+    mqtt_publish("/status", json_str);
 
     free(json_str);
     cJSON_Delete(root);
