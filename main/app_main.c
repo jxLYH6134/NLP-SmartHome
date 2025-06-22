@@ -26,6 +26,7 @@
 const char *deviceId = "4f24ed49-b990-46f3-8687-26e9da737387";
 int8_t target_temp = 10;
 int8_t relay_state = 0;
+bool freeze = false;
 
 typedef struct {
     gpio_num_t pin;
@@ -98,6 +99,18 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 }
 
+void update_freeze_control() {
+    // 更新freeze状态：内部温度大于目标温度且relay_state开启时freeze为真
+    if (relay_state && dht11_sensor.temperature > target_temp) {
+        freeze = true;
+    } else {
+        freeze = false;
+    }
+
+    // 根据freeze状态控制继电器GPIO
+    gpio_set_level(RELAY_GPIO, freeze ? 1 : 0);
+}
+
 void send_mqtt_status() {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "command", "status");
@@ -129,6 +142,7 @@ void mqtt_task(void *arg) {
 void dht11_task(void *param) {
     while (1) {
         dht11_read(&dht11_sensor, 5);
+        update_freeze_control();
         send_mqtt_status();
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
@@ -158,7 +172,7 @@ void button_task(void *arg) {
                 buzzer_beep(587, 100, 1); // D5
                 relay_state = !relay_state;
                 nvs_write_int("relay_state", relay_state);
-                gpio_set_level(RELAY_GPIO, relay_state);
+                update_freeze_control();
             } else {
                 if (xTaskGetTickCount() - setting_press_start >=
                     pdMS_TO_TICKS(3000)) {
@@ -219,6 +233,17 @@ void hall_task(void *param) {
                        (xTaskGetTickCount() - high_start_time) >= alarm_delay) {
                 alarm_triggered = true;
 
+                // 发送MQTT警告消息
+                cJSON *warning_root = cJSON_CreateObject();
+                cJSON_AddStringToObject(warning_root, "command", "warning");
+                cJSON_AddStringToObject(warning_root, "deviceId", deviceId);
+                cJSON_AddStringToObject(warning_root, "params",
+                                        "冰箱门长时间开启！");
+                char *warning_json = cJSON_PrintUnformatted(warning_root);
+                mqtt_publish("/status", warning_json);
+                free(warning_json);
+                cJSON_Delete(warning_root);
+
                 // 设置 2500Hz 持续蜂鸣
                 ledc_set_freq(LEDC_LOW_SPEED_MODE, LEDC_TIMER_0, 2500);
                 ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 7);
@@ -257,7 +282,9 @@ void app_main(void) {
     if (nvs_read_int("relay_state", &relay_state) != ESP_OK) {
         ESP_LOGW(TAG, "读取保存的设定状态失败");
     }
-    gpio_set_level(RELAY_GPIO, relay_state);
+
+    // 初始化freeze控制状态
+    update_freeze_control();
 
     vTaskDelay(pdMS_TO_TICKS(500));
     buzzer_beep(523, 100, 1);
