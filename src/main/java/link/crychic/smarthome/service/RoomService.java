@@ -121,6 +121,20 @@ public class RoomService {
 
     public ApiResponse getUserRooms(String ownerId) {
         try {
+            if (!userRepository.existsById(ownerId)) {
+                return ApiResponse.error(3, "用户不存在");
+            }
+
+            List<Room> rooms = roomRepository.findByOwnerId(ownerId);
+
+            return ApiResponse.success(rooms);
+        } catch (Exception e) {
+            return ApiResponse.error(100, "操作失败");
+        }
+    }
+
+    public ApiResponse getAllRooms(String ownerId) {
+        try {
             User user = userRepository.findById(ownerId).orElse(null);
             if (user == null) {
                 return ApiResponse.error(3, "用户不存在");

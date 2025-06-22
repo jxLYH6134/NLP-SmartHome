@@ -31,8 +31,13 @@ public class RoomController {
         return roomService.deleteRoom(request.getRoomId(), request.getOwnerId());
     }
 
-    @GetMapping("/list")
+    @GetMapping("/user")
     public ApiResponse getUserRooms(@RequestHeader("X-User-Id") String ownerId) {
         return roomService.getUserRooms(ownerId);
+    }
+
+    @GetMapping("/family")
+    public ApiResponse getAllRooms(@RequestHeader("X-User-Id") String ownerId) {
+        return roomService.getAllRooms(ownerId);
     }
 }
