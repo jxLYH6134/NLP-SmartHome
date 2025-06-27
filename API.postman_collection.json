@@ -1,0 +1,846 @@
+{
+	"info": {
+		"_postman_id": "998d7fbe-92e0-447b-8822-d4f0dc1cc6ff",
+		"name": "SmartHome",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23240724"
+	},
+	"item": [
+		{
+			"name": "鉴权测试",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/testAuth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"testAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "本地LLM",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Hi!",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/ollama",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"ollama"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "创建自动化",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"在傍晚六点到早上六点开启灯光，色温8000K\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/automation/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"automation",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "切换自动化",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ruleId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/automation/toggle",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"automation",
+						"toggle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除自动化",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ruleId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/automation/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"automation",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "列出自动化",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/automation/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"automation",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取家庭组",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/family/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "创建家庭组",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"groupName\": \"家庭组\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/family/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新家庭组",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"groupName\": \"家庭组a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/family/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除家庭组",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/family/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "加入家庭组",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"familyGroupId\": \"83347e8c-427c-413f-88a8-9010e5ef5edb\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/family/join",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"join"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "离开家庭组",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/family/leave",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"family",
+						"leave"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "创建房间",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roomName\": \"房间\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/room/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"room",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新房间",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roomId\": 1,\r\n    \"roomName\": \"房间\",\r\n    \"familyGroupId\": \"4fdfd54f-8851-4ce6-8270-9ea3fedcda52\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/room/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"room",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除房间",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/room/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"room",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "列出房间",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/room/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"room",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取设备",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/device/get?deviceId=0ece4699-cc64-41df-b0cf-178ba3060621",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"get"
+					],
+					"query": [
+						{
+							"key": "deviceId",
+							"value": "0ece4699-cc64-41df-b0cf-178ba3060621"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "控制设备",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deviceId\": \"4f24ed49-b990-46f3-8687-26e9da737387\",\r\n    \"params\": {\r\n        \"targetTemp\": 10\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/device/control",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"control"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新设备",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deviceId\": \"4f24ed49-b990-46f3-8687-26e9da737387\",\r\n    \"deviceName\": \"名字\",\r\n    \"roomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/device/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除设备",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deviceId\": \"203bf642-541e-46a5-a601-3b3232b2bb22\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/device/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "列出设备 (按房间)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/device/list/room?roomId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"list",
+						"room"
+					],
+					"query": [
+						{
+							"key": "roomId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "列出设备 (按用户)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "1145141919810",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "13186973253",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/device/list/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"device",
+						"list",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
