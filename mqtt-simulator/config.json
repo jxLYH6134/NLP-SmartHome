@@ -1,0 +1,46 @@
+[
+  {
+    "deviceId": "0ece4699-cc64-41df-b0cf-178ba3060621",
+    "type": "airConditioner",
+    "params": {
+      "power": false,
+      "mode": "制冷",
+      "targetTemp": 26,
+      "fanSpeed": 1
+    }
+  },
+  {
+    "deviceId": "c71a13ff-faf0-4c42-bb61-f0e0677f471d",
+    "type": "lamp",
+    "params": {
+      "power": false,
+      "color": 4000,
+      "brightness": 100
+    }
+  },
+  {
+    "deviceId": "534a1ce9-5070-4961-9e3d-c8fbb5313c4f",
+    "type": "envSensor",
+    "params": {
+      "temperature": 22,
+      "humidity": 80,
+      "UV": 0,
+      "airQuality": 100,
+      "illumination": 100
+    }
+  },
+  {
+    "deviceId": "fac4cd42-c6ab-4c87-941b-d0da28677a9a",
+    "type": "gasDetector",
+    "params": {
+      "concentration": 0
+    }
+  },
+  {
+    "deviceId": "203bf642-541e-46a5-a601-3b3232b2bb22",
+    "type": "airPurifier",
+    "params": {
+      "power": false
+    }
+  }
+]
