@@ -27,6 +27,7 @@ const char *deviceId = "4f24ed49-b990-46f3-8687-26e9da737387";
 int8_t target_temp = 10;
 int8_t relay_state = 0;
 bool freeze = false;
+bool hall_state = false; // 霍尔传感器状态，低电平表示门关闭
 
 typedef struct {
     gpio_num_t pin;
@@ -100,15 +101,15 @@ void buzzer_beep(uint16_t freq_hz, uint16_t duration_ms, uint8_t duty) {
 }
 
 void update_freeze_control() {
-    // 更新freeze状态：内部温度大于目标温度且relay_state开启时freeze为真
-    if (relay_state && dht11_sensor.temperature > target_temp) {
+    // 更新freeze状态：内部温度大于目标温度且relay_state开启且hall为低电平(门关闭)时freeze为真
+    if (relay_state && dht11_sensor.temperature > target_temp && !hall_state) {
         freeze = true;
     } else {
         freeze = false;
     }
 
     // 根据freeze状态控制继电器GPIO
-    gpio_set_level(RELAY_GPIO, freeze ? 1 : 0);
+    gpio_set_level(RELAY_GPIO, freeze ? 0 : 1);
 }
 
 void send_mqtt_status() {
@@ -221,12 +222,12 @@ void hall_task(void *param) {
     static bool alarm_triggered = false;
 
     while (1) {
-        bool current_state = gpio_get_level(HALL_GPIO);
+        hall_state = gpio_get_level(HALL_GPIO);
 
         // LED 跟随 HALL 电平
-        gpio_set_level(LED_GPIO, current_state);
+        gpio_set_level(LED_GPIO, hall_state);
 
-        if (current_state) { // 高电平
+        if (hall_state) { // 高电平
             if (high_start_time == 0) {
                 high_start_time = xTaskGetTickCount();
             } else if (!alarm_triggered &&
@@ -250,7 +251,8 @@ void hall_task(void *param) {
                 ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 
                 // 持续检查直到电平变低
-                while (gpio_get_level(HALL_GPIO)) {
+                while (hall_state) {
+                    hall_state = gpio_get_level(HALL_GPIO);
                     vTaskDelay(pdMS_TO_TICKS(50));
                 }
 
