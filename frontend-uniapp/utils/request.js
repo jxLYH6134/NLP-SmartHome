@@ -4,8 +4,11 @@ import {
 
 export function request(path, data = {}) {
 	return new Promise((resolve, reject) => {
+		// 检查本地存储中是否有自定义的BASE_URL
+		const customBaseUrl = uni.getStorageSync('customBaseUrl');
+		const baseUrl = customBaseUrl || API_CONFIG.BASE_URL;
 		uni.request({
-			url: API_CONFIG.BASE_URL + path,
+			url: baseUrl + path,
 			method: 'POST',
 			data: data,
 			header: {
@@ -52,8 +55,11 @@ export const authRequest = {
 				return
 			}
 
+			// 检查本地存储中是否有自定义的BASE_URL
+			const customBaseUrl = uni.getStorageSync('customBaseUrl');
+			const baseUrl = customBaseUrl || API_CONFIG.BASE_URL;
 			uni.request({
-				url: API_CONFIG.BASE_URL + path,
+				url: baseUrl + path,
 				method: method,
 				data: data,
 				header: {

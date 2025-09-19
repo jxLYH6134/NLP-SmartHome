@@ -3,7 +3,7 @@
 		<view class="account-form">
 			<view class="header">
 				<view class="logo">
-					<text class="logo-text">智能家居</text>
+					<text class="logo-text" @click="showBaseUrlDialog">智能家居</text>
 				</view>
 				<text class="welcome">👋欢迎回来</text>
 			</view>
@@ -27,10 +27,38 @@
 		data() {
 			return {
 				userId: '',
-				password: ''
+				password: '',
+				customBaseUrl: ''
 			}
 		},
 		methods: {
+			showBaseUrlDialog() {
+				// 从本地存储获取已保存的BASE_URL
+				const savedBaseUrl = uni.getStorageSync('customBaseUrl');
+				this.customBaseUrl = savedBaseUrl || '';
+
+				uni.showModal({
+					title: '设置API地址',
+					content: '请输入自定义的BASE_URL',
+					editable: true,
+					placeholderText: 'http://backend:8080',
+					showCancel: true,
+					cancelText: '取消',
+					confirmText: '保存',
+					inputValue: this.customBaseUrl,
+					success: (res) => {
+						if (res.confirm && res.content) {
+							this.customBaseUrl = res.content;
+							// 保存到本地存储
+							uni.setStorageSync('customBaseUrl', this.customBaseUrl);
+							uni.showToast({
+								title: '设置成功',
+								icon: 'success'
+							});
+						}
+					}
+				});
+			},
 			async handleLogin() {
 				if (!this.userId || !this.password) {
 					uni.showToast({
