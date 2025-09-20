@@ -8,7 +8,7 @@ from mqtt_simulator import MQTTSimulator
 class MQTTRealtimeGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("MQTT模拟器")
+        self.root.title("MQTT虚拟设备")
         self.root.geometry("480x820")
         
         # 初始化MQTT模拟器
@@ -25,7 +25,7 @@ class MQTTRealtimeGUI:
     def create_widgets(self):
         """创建界面组件"""
         # 标题
-        title_label = tk.Label(self.root, text="MQTT模拟器", font=("Arial", 16, "bold"))
+        title_label = tk.Label(self.root, text="MQTT虚拟设备", font=("Arial", 16, "bold"))
         title_label.pack(pady=10)
         
         # 控制按钮框架
